@@ -9,6 +9,7 @@ import { fetchGitHubStars, type GitHubStar } from '@/lib/github'
 import FloatingLinkManager from '@/components/floating-link-manager'
 import CategorySection from '@/components/category-section'
 import SearchBar from '@/components/search-bar'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 function starToBookmark(star: GitHubStar) {
   return {
@@ -26,6 +27,11 @@ export default function Home() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [filteredCategory, setFilteredCategory] = useState<string | null>(null)
   const [filteredLink, setFilteredLink] = useState<string | null>(null)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   // Fetch GitHub stars on mount
   useEffect(() => {
@@ -49,15 +55,7 @@ export default function Home() {
 
   useEffect(() => {
     // Initialize Lenis for smooth scrolling
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      smoothTouch: false,
-      touchMultiplier: 2,
-    })
+    const lenis = new Lenis()
 
     function raf(time: number) {
       lenis.raf(time)
@@ -136,15 +134,18 @@ export default function Home() {
               <p className="mt-1 text-sm text-muted-foreground">A curated collection of resources and inspiration</p>
             </div>
             <div className="flex items-center gap-4">
-              <button
-                onClick={handleRefreshGitHub}
-                disabled={isRefreshing}
-                className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-xs rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors disabled:opacity-50"
-                title="Refresh GitHub stars"
-              >
-                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                {isRefreshing ? 'Syncing...' : 'Sync Stars'}
-              </button>
+              <ThemeToggle />
+              {isClient && (
+                <button
+                  onClick={handleRefreshGitHub}
+                  disabled={isRefreshing}
+                  className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-xs rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors disabled:opacity-50"
+                  title="Refresh GitHub stars"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  {isRefreshing ? 'Syncing...' : 'Sync Stars'}
+                </button>
+              )}
               <div className="text-xs text-muted-foreground text-right">
                 <p>{bookmarks.length} links</p>
                 <p className="text-xs text-muted-foreground/70">{bookmarks.filter(b => b.isGitHub).length} from GitHub</p>

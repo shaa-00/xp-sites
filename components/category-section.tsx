@@ -1,6 +1,6 @@
 'use client'
 
-import { memo } from 'react'
+import { memo, useState, useEffect } from 'react'
 import { ExternalLink, Trash2, GitFork } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -41,7 +41,12 @@ const getColorForCategory = (category: string) => {
 }
 
 function CategorySection({ category, links, onDelete }: CategorySectionProps) {
+  const [isClient, setIsClient] = useState(false)
   const colors = getColorForCategory(category)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   return (
     <motion.div
@@ -82,10 +87,10 @@ function CategorySection({ category, links, onDelete }: CategorySectionProps) {
                     </p>
                   </div>
                   <p className="mt-1.5 line-clamp-2 text-xs text-muted-foreground leading-relaxed">
-                    {link.description || new URL(link.url).hostname}
+                    {link.description || (() => { try { return new URL(link.url).hostname } catch { return link.url } })()}
                   </p>
                 </div>
-                <ExternalLink className="h-4 w-4 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity" />
+                {isClient && <ExternalLink className="h-4 w-4 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity" />}
               </div>
 
               {/* Delete Button */}
@@ -97,7 +102,7 @@ function CategorySection({ category, links, onDelete }: CategorySectionProps) {
                 className="absolute -right-2 -top-2 rounded-full bg-background border border-border p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/10 cursor-pointer"
                 title="Delete link"
               >
-                <Trash2 className="h-3 w-3 text-red-500" />
+                {isClient && <Trash2 className="h-3 w-3 text-red-500" />}
               </button>
             </motion.a>
           ))}

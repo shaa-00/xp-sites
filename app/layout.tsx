@@ -2,17 +2,20 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Poppins, Quicksand } from 'next/font/google'
 import './globals.css'
+import { ThemeProvider } from '@/components/theme-provider'
 
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['500', '600', '700'],
   variable: '--font-general-sans',
+  display: 'swap',
 })
 
 const quicksand = Quicksand({
   subsets: ['latin'],
   weight: ['500', '600'],
   variable: '--font-quicksand',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -52,10 +55,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`bg-background ${poppins.variable} ${quicksand.variable}`}>
+    <html lang="en" className={`bg-background ${poppins.variable} ${quicksand.variable}`} suppressHydrationWarning>
       <body className="antialiased">
-        {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          {process.env.NODE_ENV === 'production' && <Analytics />}
+        </ThemeProvider>
       </body>
     </html>
   )

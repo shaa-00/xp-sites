@@ -1,3 +1,4 @@
+/* stylelint-disable at-rule-no-unknown, property-no-unknown */
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
@@ -171,10 +172,6 @@ html {
   cursor: auto;
 }
 
-button:hover, a:hover, [role="button"]:hover, [role="link"]:hover, input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="6" fill="none"/></svg>') 12 12, auto;
-}
-
 /* Interactive Elements */
 button, a, [role="button"], [role="link"], input[type="button"], input[type="submit"], input[type="reset"] {
   @apply cursor-pointer;
@@ -196,9 +193,8 @@ html {
   }
 }
 
-/* Optimize images for lazy loading */
+/* Optimize images for lazy loading - use HTML loading="lazy" attribute instead */
 img {
-  loading: lazy;
   content-visibility: auto;
 }
 

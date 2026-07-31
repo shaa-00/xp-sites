@@ -1,6 +1,46 @@
-export async function GET() {
+// Simple in-memory rate limiter with cleanup
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
+const RATE_LIMIT_WINDOW = 15 * 60 * 1000 // 15 minutes
+const RATE_LIMIT_MAX_REQUESTS = 10 // 10 requests per window
+const MAX_PAGES = 10 // Max 1000 repos
+
+// Cleanup expired entries periodically
+setInterval(() => {
+  const now = Date.now()
+  for (const [ip, record] of rateLimitMap.entries()) {
+    if (now > record.resetTime) {
+      rateLimitMap.delete(ip)
+    }
+  }
+}, 60 * 1000) // Cleanup every minute
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const record = rateLimitMap.get(ip)
+
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW })
+    return true
+  }
+
+  if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return false
+  }
+
+  record.count++
+  return true
+}
+
+export async function GET(request: Request) {
   const token = process.env.GITHUB_TOKEN
   const username = process.env.GITHUB_USERNAME
+
+  // Simple IP-based rate limiting (use first IP in chain)
+  const forwarded = request.headers.get('x-forwarded-for')
+  const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown'
+  if (!checkRateLimit(ip)) {
+    return Response.json({ error: 'Rate limit exceeded' }, { status: 429 })
+  }
 
   if (!token || !username) {
     console.error('[v0] GitHub credentials not configured')
@@ -26,7 +66,7 @@ export async function GET() {
 
       if (!response.ok) {
         console.error('[v0] GitHub API error:', response.statusText)
-        break
+        return Response.json({ error: 'GitHub API error' }, { status: 502 })
       }
 
       const data = await response.json()
@@ -47,7 +87,7 @@ export async function GET() {
         })
       })
 
-      if (data.length < 100) {
+      if (data.length < 100 || page >= MAX_PAGES) {
         hasMore = false
       }
 

@@ -29,9 +29,14 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
   const [query, setQuery] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
+  const [isClient, setIsClient] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const categories = useMemo(() => Object.keys(categorized), [categorized])
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -41,11 +46,9 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
       }
     }
 
-    if (isFocused) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isFocused])
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const results = useMemo(() => {
     if (!query.trim()) {
@@ -69,7 +72,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
     const linkMatches = bookmarks
       .filter(link =>
         link.title.toLowerCase().includes(normalizedQuery) ||
-        link.description?.toLowerCase().includes(normalizedQuery)
+        (typeof link.description === 'string' && link.description.toLowerCase().includes(normalizedQuery))
       )
       .map(link => ({
         type: 'link' as const,
@@ -106,25 +109,30 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
     onFilter(result.type, result.value)
     setQuery('')
     setActiveIndex(-1)
+    setIsFocused(false)
   }
 
-  const handleDropdownWheel = useCallback((e: WheelEvent) => {
-    const dropdownElement = e.currentTarget as HTMLElement
+  const handleDropdownWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    const dropdownElement = e.currentTarget
     const isScrollable = dropdownElement.scrollHeight > dropdownElement.clientHeight
     
     if (isScrollable) {
-      // Allow scrolling within dropdown
       const scrollTop = dropdownElement.scrollTop
       const scrollHeight = dropdownElement.scrollHeight
       const clientHeight = dropdownElement.clientHeight
 
-      // Prevent page scroll when at top or bottom of dropdown
-      if ((scrollTop === 0 && e.deltaY < 0) || (scrollTop + clientHeight >= scrollHeight && e.deltaY > 0)) {
+      // Prevent page scroll when scrolling within dropdown
+      if ((scrollTop === 0 && e.deltaY < 0) || (scrollTop + clientHeight >= scrollHeight - 1 && e.deltaY > 0)) {
         e.preventDefault()
+        e.stopPropagation()
+      } else {
+        // Prevent propagation when scrolling within the dropdown
+        e.stopPropagation()
       }
     } else {
       // Prevent page scroll if dropdown isn't scrollable
       e.preventDefault()
+      e.stopPropagation()
     }
   }, [])
 
@@ -133,7 +141,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
       <div className="mx-auto max-w-4xl">
         <div className="relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-            <Search className="h-4 w-4" />
+            {isClient && <Search className="h-4 w-4" />}
           </div>
           <input
             type="text"
@@ -155,7 +163,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
               }}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
             >
-              <X className="h-4 w-4" />
+              {isClient && <X className="h-4 w-4" />}
             </button>
           )}
 
@@ -167,7 +175,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                onWheel={handleDropdownWheel as any}
+                onWheel={handleDropdownWheel}
                 className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-white/10 z-40 max-h-96 overflow-y-auto flex flex-col"
                 style={{
                   background: 'rgba(255, 255, 255, 0.06)',
