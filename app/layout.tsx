@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata, Viewport } from 'next'
 import { Poppins, Quicksand } from 'next/font/google'
 import './globals.css'
@@ -65,6 +66,7 @@ export default function RootLayout({
         >
           {children}
           {process.env.NODE_ENV === 'production' && <Analytics />}
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
