@@ -3,6 +3,7 @@
 import { memo, useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { Search, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useIsClient } from '@/hooks/use-is-client'
 
 interface BookmarkData {
   title: string
@@ -29,14 +30,10 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
   const [query, setQuery] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
-  const [isClient, setIsClient] = useState(false)
+  const isClient = useIsClient()
   const containerRef = useRef<HTMLDivElement>(null)
 
   const categories = useMemo(() => Object.keys(categorized), [categorized])
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -83,6 +80,13 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
     return [...categoryMatches, ...linkMatches]
   }, [query, categories, bookmarks, categorized])
 
+  const handleSelect = useCallback((result: SearchResult) => {
+    onFilter(result.type, result.value)
+    setQuery('')
+    setActiveIndex(-1)
+    setIsFocused(false)
+  }, [onFilter])
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     switch (e.key) {
       case 'ArrowDown':
@@ -103,41 +107,22 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
         setIsFocused(false)
         break
     }
-  }, [results, activeIndex])
-
-  const handleSelect = (result: SearchResult) => {
-    onFilter(result.type, result.value)
-    setQuery('')
-    setActiveIndex(-1)
-    setIsFocused(false)
-  }
+  }, [results, activeIndex, handleSelect])
 
   const handleDropdownWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    const dropdownElement = e.currentTarget
-    const isScrollable = dropdownElement.scrollHeight > dropdownElement.clientHeight
-    
-    if (isScrollable) {
-      const scrollTop = dropdownElement.scrollTop
-      const scrollHeight = dropdownElement.scrollHeight
-      const clientHeight = dropdownElement.clientHeight
+    e.preventDefault()
+    e.stopPropagation()
+  }, [])
 
-      // Prevent page scroll when scrolling within dropdown
-      if ((scrollTop === 0 && e.deltaY < 0) || (scrollTop + clientHeight >= scrollHeight - 1 && e.deltaY > 0)) {
-        e.preventDefault()
-        e.stopPropagation()
-      } else {
-        // Prevent propagation when scrolling within the dropdown
-        e.stopPropagation()
-      }
-    } else {
-      // Prevent page scroll if dropdown isn't scrollable
+  const handleContainerWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    if (isFocused) {
       e.preventDefault()
       e.stopPropagation()
     }
-  }, [])
+  }, [isFocused])
 
   return (
-    <div ref={containerRef} className="sticky top-16 z-30 mb-8 px-4 mt-3">
+    <div ref={containerRef} className="sticky top-16 z-20 mb-8 px-4 mt-3" onWheel={handleContainerWheel}>
       <div className="mx-auto max-w-4xl">
         <div className="relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -176,12 +161,12 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
                 onWheel={handleDropdownWheel}
-                className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-white/10 z-40 max-h-96 overflow-y-auto flex flex-col"
+                className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-white/20 z-50 max-h-52 overflow-y-auto flex flex-col"
                 style={{
                   background: 'rgba(255, 255, 255, 0.06)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(24px)',
+                  WebkitBackdropFilter: 'blur(24px)',
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
                 }}
               >
                 <ul className="flex-1">

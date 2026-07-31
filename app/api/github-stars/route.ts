@@ -44,7 +44,7 @@ export async function GET(request: Request) {
 
   if (!token || !username) {
     console.error('[v0] GitHub credentials not configured')
-    return Response.json({ error: 'GitHub credentials not configured' }, { status: 401 })
+    return Response.json({ error: 'Service unavailable' }, { status: 503 })
   }
 
   try {
@@ -65,8 +65,8 @@ export async function GET(request: Request) {
       )
 
       if (!response.ok) {
-        console.error('[v0] GitHub API error:', response.statusText)
-        return Response.json({ error: 'GitHub API error' }, { status: 502 })
+        console.error('[v0] GitHub API error:', response.status)
+        return Response.json({ error: 'Failed to fetch data' }, { status: 502 })
       }
 
       const data = await response.json()
@@ -97,7 +97,7 @@ export async function GET(request: Request) {
     console.log(`[v0] Fetched ${stars.length} GitHub stars`)
     return Response.json(stars)
   } catch (error) {
-    console.error('[v0] Error fetching GitHub stars:', error)
-    return Response.json({ error: 'Failed to fetch GitHub stars' }, { status: 500 })
+    console.error('[v0] Error fetching GitHub stars')
+    return Response.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

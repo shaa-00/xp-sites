@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import Lenis from 'lenis'
-import { RefreshCw, GitFork } from 'lucide-react'
+import { RefreshCw, GitFork, Search, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { categorizeLinks } from '@/lib/categorize'
 import { initialBookmarks } from '@/lib/bookmarks'
 import { fetchGitHubStars, type GitHubStar } from '@/lib/github'
@@ -10,6 +11,7 @@ import FloatingLinkManager from '@/components/floating-link-manager'
 import CategorySection from '@/components/category-section'
 import SearchBar from '@/components/search-bar'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { useIsClient } from '@/hooks/use-is-client'
 
 function starToBookmark(star: GitHubStar) {
   return {
@@ -27,10 +29,31 @@ export default function Home() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [filteredCategory, setFilteredCategory] = useState<string | null>(null)
   const [filteredLink, setFilteredLink] = useState<string | null>(null)
-  const [isClient, setIsClient] = useState(false)
+  const isClient = useIsClient()
+  const [showSearchIcon, setShowSearchIcon] = useState(false)
+  const [showFloatingSearch, setShowFloatingSearch] = useState(false)
+  const searchBarRef = useRef<HTMLDivElement>(null)
 
+  // Scroll detection for search icon
   useEffect(() => {
-    setIsClient(true)
+    let mounted = true
+    const handleScroll = () => {
+      if (mounted && searchBarRef.current) {
+        const rect = searchBarRef.current.getBoundingClientRect()
+        setShowSearchIcon(rect.bottom < window.innerHeight * 0.8)
+      }
+    }
+
+    const initialCheck = () => {
+      requestAnimationFrame(handleScroll)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    initialCheck()
+    return () => {
+      mounted = false
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   // Fetch GitHub stars on mount
@@ -111,22 +134,26 @@ export default function Home() {
     }
   }
 
-  const displayedCategories = filteredCategory
-    ? { [filteredCategory]: categorized[filteredCategory] || [] }
-    : filteredLink
-      ? Object.entries(categorized).reduce((acc, [cat, links]) => {
-          const filtered = links.filter(link => link.url === filteredLink)
-          if (filtered.length > 0) {
-            acc[cat] = filtered
-          }
-          return acc
-        }, {} as Record<string, typeof bookmarks>)
-      : categorized
+  const displayedCategories = useMemo(() => {
+    if (filteredCategory) {
+      return { [filteredCategory]: categorized[filteredCategory] || [] }
+    }
+    if (filteredLink) {
+      return Object.entries(categorized).reduce((acc, [cat, links]) => {
+        const filtered = links.filter(link => link.url === filteredLink)
+        if (filtered.length > 0) {
+          acc[cat] = filtered
+        }
+        return acc
+      }, {} as Record<string, typeof bookmarks>)
+    }
+    return categorized
+  }, [filteredCategory, filteredLink, categorized])
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-30 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div>
@@ -134,6 +161,13 @@ export default function Home() {
               <p className="mt-1 text-sm text-muted-foreground">A curated collection of resources and inspiration</p>
             </div>
             <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowFloatingSearch(true)}
+                className={`p-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors ${showSearchIcon ? 'flex' : 'hidden'}`}
+                aria-label="Search"
+              >
+                <Search className="w-4 h-4" />
+              </button>
               <ThemeToggle />
               {isClient && (
                 <button
@@ -156,15 +190,17 @@ export default function Home() {
       </header>
 
       {/* Search Bar */}
-      <SearchBar
-        bookmarks={bookmarks}
-        categorized={categorized}
-        onFilter={handleFilter}
-        onClose={() => {
-          setFilteredCategory(null)
-          setFilteredLink(null)
-        }}
-      />
+      <div ref={searchBarRef}>
+        <SearchBar
+          bookmarks={bookmarks}
+          categorized={categorized}
+          onFilter={handleFilter}
+          onClose={() => {
+            setFilteredCategory(null)
+            setFilteredLink(null)
+          }}
+        />
+      </div>
 
       {/* Main Content */}
       <main className="mx-auto max-w-4xl px-4 pb-12 sm:px-6 lg:px-8">
@@ -219,6 +255,38 @@ export default function Home() {
           </p>
         </div>
       </footer>
+
+      {/* Floating Search Overlay */}
+      <AnimatePresence>
+        {showFloatingSearch && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 backdrop-blur-md flex items-start justify-center pt-24 px-4"
+            onClick={() => setShowFloatingSearch(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="w-full max-w-2xl"
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            >
+              <SearchBar
+                bookmarks={bookmarks}
+                categorized={categorized}
+                onFilter={(type, value) => {
+                  handleFilter(type, value)
+                  setShowFloatingSearch(false)
+                }}
+                onClose={() => setShowFloatingSearch(false)}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Floating Link Manager */}
       <FloatingLinkManager onAdd={handleAddBookmark} />

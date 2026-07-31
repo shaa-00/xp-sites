@@ -4,6 +4,7 @@ import { memo, useState, useEffect } from 'react'
 import { ExternalLink, Trash2, GitFork } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { useIsClient } from '@/hooks/use-is-client'
 
 interface BookmarkData {
   title: string
@@ -41,12 +42,8 @@ const getColorForCategory = (category: string) => {
 }
 
 function CategorySection({ category, links, onDelete }: CategorySectionProps) {
-  const [isClient, setIsClient] = useState(false)
+  const isClient = useIsClient()
   const colors = getColorForCategory(category)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   return (
     <motion.div

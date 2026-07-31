@@ -4,6 +4,7 @@ import { memo, useState, useCallback, useEffect } from 'react'
 import { Plus, X } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { useIsClient } from '@/hooks/use-is-client'
 
 interface FloatingLinkManagerProps {
   onAdd: (title: string, url: string) => void
@@ -14,11 +15,7 @@ function FloatingLinkManager({ onAdd }: FloatingLinkManagerProps) {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
   const [error, setError] = useState('')
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
+  const isClient = useIsClient()
 
   const validateUrl = (urlString: string): boolean => {
     try {
@@ -70,7 +67,7 @@ function FloatingLinkManager({ onAdd }: FloatingLinkManagerProps) {
       {isClient && (
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
-          className="fixed bottom-6 left-6 z-40 p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+          className="fixed bottom-6 left-6 z-50 p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
           style={{
             background: 'rgba(255, 255, 255, 0.08)',
             backdropFilter: 'blur(5px)',
@@ -102,7 +99,7 @@ function FloatingLinkManager({ onAdd }: FloatingLinkManagerProps) {
       {/* Floating Form Panel */}
       {isClient && isOpen && (
         <motion.div
-          className="fixed bottom-20 left-6 z-40 w-80 rounded-2xl p-6 shadow-2xl"
+          className="fixed bottom-20 left-6 z-50 w-80 rounded-2xl p-6 shadow-2xl"
           style={{
             background: 'rgba(255, 255, 255, 0.08)',
             backdropFilter: 'blur(12px)',
@@ -159,7 +156,7 @@ function FloatingLinkManager({ onAdd }: FloatingLinkManagerProps) {
       {/* Backdrop overlay when form is open */}
       {isClient && isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20"
+          className="fixed inset-0 z-40 bg-black/20"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
