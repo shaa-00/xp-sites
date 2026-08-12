@@ -3,7 +3,6 @@
 import { memo, useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { Search, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useIsClient } from '@/hooks/use-is-client'
 
 interface BookmarkData {
   title: string
@@ -30,7 +29,6 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
   const [query, setQuery] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
-  const isClient = useIsClient()
   const containerRef = useRef<HTMLDivElement>(null)
 
   const categories = useMemo(() => Object.keys(categorized), [categorized])
@@ -43,9 +41,11 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    if (isFocused) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isFocused])
 
   const results = useMemo(() => {
     if (!query.trim()) {
@@ -69,7 +69,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
     const linkMatches = bookmarks
       .filter(link =>
         link.title.toLowerCase().includes(normalizedQuery) ||
-        (typeof link.description === 'string' && link.description.toLowerCase().includes(normalizedQuery))
+        link.description?.toLowerCase().includes(normalizedQuery)
       )
       .map(link => ({
         type: 'link' as const,
@@ -79,13 +79,6 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
 
     return [...categoryMatches, ...linkMatches]
   }, [query, categories, bookmarks, categorized])
-
-  const handleSelect = useCallback((result: SearchResult) => {
-    onFilter(result.type, result.value)
-    setQuery('')
-    setActiveIndex(-1)
-    setIsFocused(false)
-  }, [onFilter])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     switch (e.key) {
@@ -107,26 +100,40 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
         setIsFocused(false)
         break
     }
-  }, [results, activeIndex, handleSelect])
+  }, [results, activeIndex])
 
-  const handleDropdownWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const handleSelect = (result: SearchResult) => {
+    onFilter(result.type, result.value)
+    setQuery('')
+    setActiveIndex(-1)
+  }
+
+  const handleDropdownWheel = useCallback((e: WheelEvent) => {
+    const dropdownElement = e.currentTarget as HTMLElement
+    const isScrollable = dropdownElement.scrollHeight > dropdownElement.clientHeight
+    
+    if (isScrollable) {
+      // Allow scrolling within dropdown
+      const scrollTop = dropdownElement.scrollTop
+      const scrollHeight = dropdownElement.scrollHeight
+      const clientHeight = dropdownElement.clientHeight
+
+      // Prevent page scroll when at top or bottom of dropdown
+      if ((scrollTop === 0 && e.deltaY < 0) || (scrollTop + clientHeight >= scrollHeight && e.deltaY > 0)) {
+        e.preventDefault()
+      }
+    } else {
+      // Prevent page scroll if dropdown isn't scrollable
+      e.preventDefault()
+    }
   }, [])
 
-  const handleContainerWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    if (isFocused) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
-  }, [isFocused])
-
   return (
-    <div ref={containerRef} className="sticky top-16 z-20 mb-8 px-4 mt-3" onWheel={handleContainerWheel}>
+    <div ref={containerRef} className="sticky top-16 z-30 mb-8 px-4 mt-3">
       <div className="mx-auto max-w-4xl">
         <div className="relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-            {isClient && <Search className="h-4 w-4" />}
+            <Search className="h-4 w-4" />
           </div>
           <input
             type="text"
@@ -148,7 +155,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
               }}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
             >
-              {isClient && <X className="h-4 w-4" />}
+              <X className="h-4 w-4" />
             </button>
           )}
 
@@ -160,13 +167,13 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                onWheel={handleDropdownWheel}
-                className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-white/20 z-50 max-h-52 overflow-y-auto flex flex-col"
+                onWheel={handleDropdownWheel as any}
+                className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-white/10 z-40 max-h-96 overflow-y-auto flex flex-col"
                 style={{
                   background: 'rgba(255, 255, 255, 0.06)',
-                  backdropFilter: 'blur(24px)',
-                  WebkitBackdropFilter: 'blur(24px)',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
                 }}
               >
                 <ul className="flex-1">

@@ -77,7 +77,7 @@ export function categorizeLinks(links: BookmarkData[]): CategorizedLinks {
   const categorized: CategorizedLinks = {};
 
   links.forEach((link) => {
-    const category = categorizeUrl(link.title, link.url, link.isGitHub ?? false);
+    const category = categorizeUrl(link.title, link.url);
     if (!categorized[category]) {
       categorized[category] = [];
     }

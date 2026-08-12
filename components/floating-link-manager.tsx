@@ -1,10 +1,9 @@
 'use client'
 
-import { memo, useState, useCallback, useEffect } from 'react'
+import { memo, useState, useCallback } from 'react'
 import { Plus, X } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { useIsClient } from '@/hooks/use-is-client'
 
 interface FloatingLinkManagerProps {
   onAdd: (title: string, url: string) => void
@@ -15,12 +14,11 @@ function FloatingLinkManager({ onAdd }: FloatingLinkManagerProps) {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
   const [error, setError] = useState('')
-  const isClient = useIsClient()
 
   const validateUrl = (urlString: string): boolean => {
     try {
-      const url = new URL(urlString)
-      return ['http:', 'https:'].includes(url.protocol)
+      new URL(urlString)
+      return true
     } catch {
       return false
     }
@@ -32,16 +30,6 @@ function FloatingLinkManager({ onAdd }: FloatingLinkManagerProps) {
 
     if (!title.trim()) {
       setError('Title is required')
-      return
-    }
-
-    if (title.trim().length > 200) {
-      setError('Title must be less than 200 characters')
-      return
-    }
-
-    if (/<[^>]*>/.test(title.trim())) {
-      setError('Title cannot contain HTML')
       return
     }
 
@@ -64,42 +52,40 @@ function FloatingLinkManager({ onAdd }: FloatingLinkManagerProps) {
   return (
     <>
       {/* Floating Button */}
-      {isClient && (
-        <motion.button
-          onClick={() => setIsOpen(!isOpen)}
-          className="fixed bottom-6 left-6 z-50 p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
-          style={{
-            background: 'rgba(255, 255, 255, 0.08)',
-            backdropFilter: 'blur(5px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2)',
-          }}
-          animate={{
-            boxShadow: isOpen 
-              ? '0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 0 20px rgba(255, 255, 255, 0.3)'
-              : '0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2)'
-          }}
-          transition={{ duration: 0.3 }}
-          aria-label="Add new link"
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 left-6 z-40 p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+        style={{
+          background: 'rgba(255, 255, 255, 0.08)',
+          backdropFilter: 'blur(5px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2)',
+        }}
+        animate={{
+          boxShadow: isOpen 
+            ? '0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 0 20px rgba(255, 255, 255, 0.3)'
+            : '0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2)'
+        }}
+        transition={{ duration: 0.3 }}
+        aria-label="Add new link"
+      >
+        <motion.div
+          animate={{ rotate: isOpen ? 45 : 0 }}
+          transition={{ duration: 0.3, type: 'spring', stiffness: 200 }}
         >
-          <motion.div
-            animate={{ rotate: isOpen ? 45 : 0 }}
-            transition={{ duration: 0.3, type: 'spring', stiffness: 200 }}
-          >
-            {isOpen ? (
-              <X className="h-5 w-5 text-foreground" />
-            ) : (
-              <Plus className="h-5 w-5 text-foreground" />
-            )}
-          </motion.div>
-        </motion.button>
-      )}
+          {isOpen ? (
+            <X className="h-5 w-5 text-foreground" />
+          ) : (
+            <Plus className="h-5 w-5 text-foreground" />
+          )}
+        </motion.div>
+      </motion.button>
 
       {/* Floating Form Panel */}
-      {isClient && isOpen && (
+      {isOpen && (
         <motion.div
-          className="fixed bottom-20 left-6 z-50 w-80 rounded-2xl p-6 shadow-2xl"
+          className="fixed bottom-20 left-6 z-40 w-80 rounded-2xl p-6 shadow-2xl"
           style={{
             background: 'rgba(255, 255, 255, 0.08)',
             backdropFilter: 'blur(12px)',
@@ -154,9 +140,9 @@ function FloatingLinkManager({ onAdd }: FloatingLinkManagerProps) {
       )}
 
       {/* Backdrop overlay when form is open */}
-      {isClient && isOpen && (
+      {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/20"
+          className="fixed inset-0 z-30 bg-black/20"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
