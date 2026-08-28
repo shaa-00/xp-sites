@@ -134,9 +134,53 @@ test('assignCategories offline assigns one real category to each item, batch siz
   })
   assert.equal(batches, 3)
   assert.equal(out['AI Tools & Agents'].length, 3)
-  // Every assigned category must be exactly one of the fixed 15.
-  for (const cat of Object.keys(out)) assert.ok(CATEGORIES.includes(cat))
+  for (const cat of Object.keys(out)) {
+    if (cat === 'driftCount') continue
+    assert.ok(CATEGORIES.includes(cat))
+  }
 })
+
+test('assignCategories returns a driftCount and warns when Gemini drifts', async () => {
+  const links = [
+    { title: 'Real', url: 'https://real.com' },
+    { title: 'Drifty', url: 'https://drift.com' },
+  ]
+  let warned = ''
+  const origWarn = console.warn
+  console.warn = (m) => { warned += m }
+  try {
+    // One valid category, one invented (drifting) category.
+    const out = await assignCategories(links, [], {
+      batchSize: 10,
+      callGemini: async () => ['AI Tools & Agents', 'Brand New Category 999'],
+    })
+    assert.ok(CATEGORIES.includes('AI Tools & Agents'))
+    assert.equal(out['AI Tools & Agents'].length, 1)
+    assert.equal(out[FALLBACK_CATEGORY].length, 1)
+    assert.equal(out.driftCount, 1)
+    assert.match(warned, /rerouted.*fallback.*drift/i)
+  } finally {
+    console.warn = origWarn
+  }
+})
+
+test('assignCategories driftCount is 0 and warns nothing when all categories are valid', async () => {
+  const links = [{ title: 'x', url: 'https://example.com/x' }]
+  let warned = ''
+  const origWarn = console.warn
+  console.warn = (m) => { warned += m }
+  try {
+    const out = await assignCategories(links, [], {
+      batchSize: 10,
+      callGemini: async () => ['Developer Tools & Productivity'],
+    })
+    assert.equal(out.driftCount, 0)
+    assert.equal(warned, '')
+  } finally {
+    console.warn = origWarn
+  }
+})
+
 
 test('assignCategories never produces a category outside the fixed list', async () => {
   const links = [{ title: 'x', url: 'https://example.com/x' }]
@@ -145,7 +189,7 @@ test('assignCategories never produces a category outside the fixed list', async 
     batchSize: 10,
     callGemini: async () => ['Brand New Category 999'],
   })
-  assert.deepEqual(Object.keys(out), [FALLBACK_CATEGORY])
+  assert.ok(Object.keys(out).filter(k => k !== 'driftCount').every(k => CATEGORIES.includes(k)))
 })
 
 test('assignCategories batches large inputs by 40', async () => {
@@ -228,8 +272,10 @@ test('only new URLs are sent to Gemini; cached URLs keep their category', async 
   })
   assert.equal(batches, 1) // only the new URL, not the cached one
 
+  const { driftCount: _ignore, ...catOnly } = newCat
+  assert.equal(_ignore, 0)
   const known = knownByCategory(cached, new Set(links.map((l) => l.url)))
-  const finalLinks = mergeRecords(known, splitByKind(newCat).links)
+  const finalLinks = mergeRecords(known, splitByKind(catOnly).links)
   assert.equal(finalLinks['Developer Tools & Productivity'][0].url, 'https://react.dev')
   assert.equal(finalLinks['AI Tools & Agents'][0].url, 'https://nextjs.org')
 })

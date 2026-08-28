@@ -92,16 +92,26 @@ export async function assignCategories(links, starred, { batchSize = 40, callGem
     ...starred.map((it) => ({ kind: 'star', ...it })),
   ]
   const out = {}
+  let driftCount = 0
   for (let i = 0; i < items.length; i += batchSize) {
     const batch = items.slice(i, i + batchSize)
     const cats = await callGemini(batch)
     for (let j = 0; j < batch.length; j++) {
-      const cat = normalizeCategory(cats[j])
+      const rawCat = cats[j]
+      const cat = normalizeCategory(rawCat)
+      if (cat === FALLBACK_CATEGORY && rawCat !== FALLBACK_CATEGORY) {
+        driftCount++
+      }
       ;(out[cat] ||= []).push(batch[j])
     }
   }
+  if (driftCount > 0) {
+    console.warn(`[categorize] ${driftCount} item(s) rerouted to fallback category (Gemini drift detected)`)
+  }
+  out.driftCount = driftCount
   return out
 }
+
 
 export function mergeRecords(...records) {
   const merged = {}
@@ -274,7 +284,10 @@ async function main() {
       batchSize: 40,
       callGemini: makeGeminiCaller(),
     })
-    const { links: newLinkRec, starred: newStarRec } = splitByKind(categorized)
+    // Strip the metadata key before splitting into links/starred records,
+    // so splitByKind doesn't trip on the non-object driftCount property.
+    const { driftCount: _drift, ...catOnly } = categorized
+    const { links: newLinkRec, starred: newStarRec } = splitByKind(catOnly)
     // Merge fresh classifications with the entire committed cache (cached
     // items are never re-classified or dropped — only genuinely new URLs hit
     // Gemini).
