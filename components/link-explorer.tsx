@@ -118,7 +118,7 @@ function LinkExplorer({ categorized }: LinkExplorerProps) {
                   <Bookmark className="w-3.5 h-3.5" />
                   {totalLinks} links
                 </span>
-                <span className="flex items-center gap-1.5 text-muted-foreground/70">
+                <span className="flex items-center gap-1.5 text-muted-foreground">
                   <GitHubMark className="w-3.5 h-3.5" />
                   {githubCount} from GitHub
                 </span>
