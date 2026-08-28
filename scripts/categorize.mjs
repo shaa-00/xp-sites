@@ -25,6 +25,9 @@ export const CATEGORIES = [
   'Wallpapers & Aesthetics',
   'Framer & Portfolio Templates',
   'Anime & Art',
+  'AI Skills & Context',
+  'Utilities & Scripts',
+  'Self-Hosted & Architecture',
 ]
 
 export const FALLBACK_CATEGORY = 'Free Resources & Open Source Lists'

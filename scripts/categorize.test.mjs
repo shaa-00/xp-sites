@@ -42,10 +42,13 @@ const FIXTURE = {
   ],
 }
 
-test('CATEGORIES is the fixed 15-item closed list', () => {
-  assert.equal(CATEGORIES.length, 15)
+test('CATEGORIES is the fixed 18-item closed list including new categories', () => {
+  assert.equal(CATEGORIES.length, 18)
   assert.ok(CATEGORIES.includes('Free Resources & Open Source Lists'))
   assert.ok(CATEGORIES.includes('AI Tools & Agents'))
+  assert.ok(CATEGORIES.includes('AI Skills & Context'))
+  assert.ok(CATEGORIES.includes('Utilities & Scripts'))
+  assert.ok(CATEGORIES.includes('Self-Hosted & Architecture'))
 })
 
 test('FALLBACK_CATEGORY is a real category in the fixed list', () => {

@@ -1,7 +1,7 @@
 'use client'
 
 import { memo } from 'react'
-import { ExternalLink, Bot, GraduationCap, Wrench, Plug, Palette, Sparkles, Building2, Monitor, Terminal, BookOpen, Shield, Rocket, Image as ImageIcon, LayoutTemplate, Brush, Tag } from 'lucide-react'
+import { ExternalLink, Bot, GraduationCap, Wrench, Plug, Palette, Sparkles, Building2, Monitor, Terminal, BookOpen, Shield, Rocket, Image as ImageIcon, LayoutTemplate, Brush, Tag, BookMarked, Hammer, Server } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useIsClient } from '@/hooks/use-is-client'
@@ -38,6 +38,9 @@ const CATEGORY_STYLES: Record<string, { bg: string; text: string; border: string
   'Wallpapers & Aesthetics': { bg: 'bg-pink-500/10', text: 'text-pink-600 dark:text-pink-400', border: 'border-pink-200 dark:border-pink-800', icon: ImageIcon },
   'Framer & Portfolio Templates': { bg: 'bg-orange-500/10', text: 'text-orange-600 dark:text-orange-400', border: 'border-orange-200 dark:border-orange-800', icon: LayoutTemplate },
   'Anime & Art': { bg: 'bg-rose-500/10', text: 'text-rose-600 dark:text-rose-400', border: 'border-rose-200 dark:border-rose-800', icon: Brush },
+  'AI Skills & Context': { bg: 'bg-fuchsia-500/10', text: 'text-fuchsia-600 dark:text-fuchsia-400', border: 'border-fuchsia-200 dark:border-fuchsia-800', icon: BookMarked },
+  'Utilities & Scripts': { bg: 'bg-lime-500/10', text: 'text-lime-600 dark:text-lime-400', border: 'border-lime-200 dark:border-lime-800', icon: Hammer },
+  'Self-Hosted & Architecture': { bg: 'bg-slate-500/10', text: 'text-slate-600 dark:text-slate-400', border: 'border-slate-200 dark:border-slate-800', icon: Server },
 }
 
 const FALLBACK_STYLE = { bg: 'bg-gray-500/10', text: 'text-gray-600 dark:text-gray-400', border: 'border-gray-200 dark:border-gray-800', icon: Tag }

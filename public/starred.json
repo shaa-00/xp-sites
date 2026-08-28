@@ -11,35 +11,6 @@
   ],
   "Developer Tools & Productivity": [
     {
-      "name": "usestrix/strix",
-      "url": "https://github.com/usestrix/strix",
-      "description": "Open-source AI penetration testing tool to find and fix your app’s vulnerabilities.",
-      "stars": 59036,
-      "language": "Python",
-      "topics": [
-        "agents",
-        "ai-hacking",
-        "ai-penetration-testing",
-        "ai-pentesting",
-        "ai-security",
-        "artificial-intelligence",
-        "bug-bounty",
-        "code-quality",
-        "ctf-tools",
-        "cybersecurity",
-        "cybersecurity-tools",
-        "ethical-hacking",
-        "hacking",
-        "llm-security",
-        "offensive-security",
-        "penetration-testing",
-        "pentesting-tools",
-        "red-teaming",
-        "security",
-        "security-automation"
-      ]
-    },
-    {
       "name": "every-app/open-seo",
       "url": "https://github.com/every-app/open-seo",
       "description": "Open source alternative to Semrush and Ahrefs",
@@ -53,21 +24,6 @@
         "seo",
         "seo-tools",
         "site-audit"
-      ]
-    },
-    {
-      "name": "ayghri/i-have-adhd",
-      "url": "https://github.com/ayghri/i-have-adhd",
-      "description": "A skill to stop your coding agent from burying the answer. ADHD-friendly output.",
-      "stars": 25254,
-      "language": "Python",
-      "topics": [
-        "adhd",
-        "claude-",
-        "claude-code-plugin",
-        "claude-skills",
-        "developer-tools",
-        "productivity"
       ]
     },
     {
@@ -110,22 +66,6 @@
       "topics": []
     },
     {
-      "name": "caamer20/Telegram-Drive",
-      "url": "https://github.com/caamer20/Telegram-Drive",
-      "description": "Turn your Telegram account into an unlimited, secure cloud storage drive. an Open-source desktop app built with Tauri, Rust, and React.",
-      "stars": 4852,
-      "language": "TypeScript",
-      "topics": [
-        "open-source",
-        "react",
-        "rust",
-        "tauri",
-        "telegram",
-        "telegramapi",
-        "typescript"
-      ]
-    },
-    {
       "name": "AWeirdDev/flights",
       "url": "https://github.com/AWeirdDev/flights",
       "description": "Fast, robust Google Flights scraper (API) for Python. (Probably)",
@@ -142,66 +82,6 @@
         "python",
         "travel",
         "trip"
-      ]
-    },
-    {
-      "name": "zenhosta/9drive",
-      "url": "https://github.com/zenhosta/9drive",
-      "description": "9Drive is a storage gateway web app for connecting multiple Google Drive accounts into one virtual storage dashboard. Users can connect Google Drive accounts, track quota, upload files, organize files with virtual folders, preview files, and let the backend route uploads to the Drive account with enough free space.",
-      "stars": 1830,
-      "language": "TypeScript",
-      "topics": [
-        "drive",
-        "gateway",
-        "proxy",
-        "storage"
-      ]
-    },
-    {
-      "name": "Graphify-Labs/graphify",
-      "url": "https://github.com/Graphify-Labs/graphify",
-      "description": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.",
-      "stars": 111872,
-      "language": "Python",
-      "topics": [
-        "ai-agents",
-        "antigravity",
-        "ast",
-        "claude-code",
-        "code-analysis",
-        "code-search",
-        "codex",
-        "cursor",
-        "developer-tools",
-        "gemini",
-        "graphrag",
-        "knowledge-graph",
-        "leiden",
-        "llm",
-        "mcp",
-        "openclaw",
-        "rag",
-        "skills",
-        "tree-sitter"
-      ]
-    },
-    {
-      "name": "DietrichGebert/ponytail",
-      "url": "https://github.com/DietrichGebert/ponytail",
-      "description": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
-      "stars": 115004,
-      "language": "JavaScript",
-      "topics": [
-        "agent-skills",
-        "ai-agents",
-        "claude",
-        "claude-code",
-        "claude-code-plugin",
-        "cursor-rules",
-        "developer-tools",
-        "llm",
-        "prompt-engineering",
-        "yagni"
       ]
     },
     {
@@ -234,30 +114,12 @@
       ]
     },
     {
-      "name": "sam1am/anyapk",
-      "url": "https://github.com/sam1am/anyapk",
-      "description": "Install any apk on the device you own. ",
-      "stars": 2684,
-      "language": "Kotlin",
-      "topics": []
-    },
-    {
       "name": "Zie619/n8n-workflows",
       "url": "https://github.com/Zie619/n8n-workflows",
       "description": "all of the workflows of n8n i could find (also from the site itself)",
       "stars": 56312,
       "language": "Python",
       "topics": []
-    },
-    {
-      "name": "akkva/gwfox",
-      "url": "https://github.com/akkva/gwfox",
-      "description": "Bringing a crisp new look to Firefox",
-      "stars": 887,
-      "language": "CSS",
-      "topics": [
-        "firefox-theme"
-      ]
     },
     {
       "name": "ytdl-org/youtube-dl",
@@ -300,58 +162,12 @@
       "topics": []
     },
     {
-      "name": "bytedance/deer-flow",
-      "url": "https://github.com/bytedance/deer-flow",
-      "description": "An open-source long-horizon SuperAgent harness that researches, codes, and creates. With the help of sandboxes, memories, tools, skill, subagents and message gateway, it handles different levels of tasks that could take minutes to hours.",
-      "stars": 81054,
-      "language": "Python",
-      "topics": [
-        "agent",
-        "agentic",
-        "agentic-framework",
-        "agentic-workflow",
-        "ai",
-        "ai-agents",
-        "deep-research",
-        "harness",
-        "langchain",
-        "langgraph",
-        "langmanus",
-        "llm",
-        "multi-agent",
-        "nodejs",
-        "podcast",
-        "python",
-        "superagent",
-        "typescript"
-      ]
-    },
-    {
       "name": "chenglou/pretext",
       "url": "https://github.com/chenglou/pretext",
       "description": "Fast, accurate & comprehensive text measurement & layout",
       "stars": 50091,
       "language": "TypeScript",
       "topics": []
-    },
-    {
-      "name": "JuliusBrussee/caveman",
-      "url": "https://github.com/JuliusBrussee/caveman",
-      "description": "🪨 why use many token when few token do trick — Claude Code skill that cuts 65% of tokens by talking like caveman",
-      "stars": 101575,
-      "language": "Go",
-      "topics": [
-        "ai",
-        "anthropic",
-        "caveman",
-        "claude",
-        "claude-code",
-        "llm",
-        "meme",
-        "prompt-engineering",
-        "skill",
-        "tokens"
-      ]
     },
     {
       "name": "maguowei/starred",
@@ -378,25 +194,6 @@
         "javascript",
         "rust",
         "typescript"
-      ]
-    },
-    {
-      "name": "CraftOS-dev/CraftBot",
-      "url": "https://github.com/CraftOS-dev/CraftBot",
-      "description": "One agent. Every kind of work.",
-      "stars": 376,
-      "language": "Python",
-      "topics": [
-        "agent-architecture",
-        "ai",
-        "ai-agents",
-        "computer-use-agent",
-        "content-engineering",
-        "help-wanted",
-        "llm",
-        "open-source",
-        "proactive-agent",
-        "tool-use"
       ]
     },
     {
@@ -677,31 +474,55 @@
         "llm",
         "p2p"
       ]
+    },
+    {
+      "name": "bytedance/deer-flow",
+      "url": "https://github.com/bytedance/deer-flow",
+      "description": "An open-source long-horizon SuperAgent harness that researches, codes, and creates. With the help of sandboxes, memories, tools, skill, subagents and message gateway, it handles different levels of tasks that could take minutes to hours.",
+      "stars": 81054,
+      "language": "Python",
+      "topics": [
+        "agent",
+        "agentic",
+        "agentic-framework",
+        "agentic-workflow",
+        "ai",
+        "ai-agents",
+        "deep-research",
+        "harness",
+        "langchain",
+        "langgraph",
+        "langmanus",
+        "llm",
+        "multi-agent",
+        "nodejs",
+        "podcast",
+        "python",
+        "superagent",
+        "typescript"
+      ]
+    },
+    {
+      "name": "CraftOS-dev/CraftBot",
+      "url": "https://github.com/CraftOS-dev/CraftBot",
+      "description": "One agent. Every kind of work.",
+      "stars": 376,
+      "language": "Python",
+      "topics": [
+        "agent-architecture",
+        "ai",
+        "ai-agents",
+        "computer-use-agent",
+        "content-engineering",
+        "help-wanted",
+        "llm",
+        "open-source",
+        "proactive-agent",
+        "tool-use"
+      ]
     }
   ],
   "Learning & Career": [
-    {
-      "name": "virgiliojr94/book-to-skill",
-      "url": "https://github.com/virgiliojr94/book-to-skill",
-      "description": "Turn any technical book PDF into a Claude Code skill — ready to study, reference, and use while you work.",
-      "stars": 26569,
-      "language": "Python",
-      "topics": [
-        "agent-skills",
-        "ai-agents",
-        "book-to-skill",
-        "context-engineering",
-        "document-processing",
-        "edtech",
-        "knowledge-base",
-        "knowledge-management",
-        "llm",
-        "pdf-to-markdown",
-        "rag",
-        "self-study",
-        "study-tools"
-      ]
-    },
     {
       "name": "tapaswenipathak/Open-Source-Programs",
       "url": "https://github.com/tapaswenipathak/Open-Source-Programs",
@@ -812,26 +633,66 @@
         "tutorial-exercises",
         "tutorials"
       ]
-    }
-  ],
-  "Design Resources": [
-    {
-      "name": "apinanaivot/IKEA-3D-Model-Download-Button",
-      "url": "https://github.com/apinanaivot/IKEA-3D-Model-Download-Button",
-      "description": "Adds ability to download models from IKEA website",
-      "stars": 1437,
-      "language": "JavaScript",
-      "topics": []
     },
     {
-      "name": "google-labs-code/design.md",
-      "url": "https://github.com/google-labs-code/design.md",
-      "description": "A format specification for describing a visual identity to coding agents. DESIGN.md gives agents a persistent, structured understanding of a design system.",
-      "stars": 27575,
-      "language": "TypeScript",
-      "topics": []
+      "name": "ashishps1/awesome-system-design-resources",
+      "url": "https://github.com/ashishps1/awesome-system-design-resources",
+      "description": "Learn System Design concepts and prepare for interviews using free resources.",
+      "stars": 41005,
+      "language": "Java",
+      "topics": [
+        "awesome",
+        "backend",
+        "computer-science",
+        "distributed-systems",
+        "high-level-design",
+        "hld",
+        "interview",
+        "interview-questions",
+        "scalability",
+        "system-design"
+      ]
+    },
+    {
+      "name": "arpitbbhayani/system-design-questions",
+      "url": "https://github.com/arpitbbhayani/system-design-questions",
+      "description": "A no-fluff and highly practical masterclass that reignites engineering curiosity and helps SDE-2, SDE-3, and above become great at designing, implementing, and shipping scalable, fault-tolerant, and highly available systems at the workplace.",
+      "stars": 3120,
+      "language": "Python",
+      "topics": [
+        "coursework",
+        "distributed-systems",
+        "hacktoberfest",
+        "system-design",
+        "system-design-interview",
+        "system-design-project",
+        "system-design-questions"
+      ]
+    },
+    {
+      "name": "donnemartin/system-design-primer",
+      "url": "https://github.com/donnemartin/system-design-primer",
+      "description": "Learn how to design large-scale systems. Prep for the system design interview.  Includes Anki flashcards.",
+      "stars": 366536,
+      "language": "Python",
+      "topics": [
+        "design",
+        "design-patterns",
+        "design-system",
+        "development",
+        "interview",
+        "interview-practice",
+        "interview-questions",
+        "programming",
+        "python",
+        "system",
+        "web",
+        "web-application",
+        "webapp"
+      ]
     }
   ],
+  "Design Resources": [],
   "Wallpapers & Aesthetics": [
     {
       "name": "Kolua666/WallFlow",
@@ -896,6 +757,38 @@
         "unixporn",
         "wallpapers"
       ]
+    },
+    {
+      "name": "akkva/gwfox",
+      "url": "https://github.com/akkva/gwfox",
+      "description": "Bringing a crisp new look to Firefox",
+      "stars": 887,
+      "language": "CSS",
+      "topics": [
+        "firefox-theme"
+      ]
+    },
+    {
+      "name": "dharmx/walls",
+      "url": "https://github.com/dharmx/walls",
+      "description": "All of my wallpapers in one repo.",
+      "stars": 8694,
+      "language": null,
+      "topics": [
+        "anime",
+        "consious",
+        "dracula",
+        "everblush",
+        "everforest",
+        "gruvbox",
+        "javacafe",
+        "material",
+        "nord",
+        "ocean",
+        "portrait",
+        "radium",
+        "wallpapers"
+      ]
     }
   ],
   "UI Components & Animation": [
@@ -906,28 +799,6 @@
       "stars": 2217,
       "language": "TypeScript",
       "topics": []
-    },
-    {
-      "name": "Leonxlnx/taste-skill",
-      "url": "https://github.com/Leonxlnx/taste-skill",
-      "description": "Taste-Skill - gives your AI good taste. stops the AI from generating boring, generic slop ",
-      "stars": 81809,
-      "language": "JavaScript",
-      "topics": [
-        "agent",
-        "ai",
-        "claude",
-        "claude-code",
-        "codex",
-        "coding",
-        "design",
-        "frontend",
-        "lowcode",
-        "nocode",
-        "skill",
-        "skills",
-        "vibecoding"
-      ]
     },
     {
       "name": "guillermolg00/morphicons",
@@ -1026,6 +897,42 @@
         "react",
         "react-tools",
         "tailwind"
+      ]
+    },
+    {
+      "name": "jnsahaj/tweakcn",
+      "url": "https://github.com/jnsahaj/tweakcn",
+      "description": "A visual no-code theme editor for shadcn/ui components",
+      "stars": 10320,
+      "language": "TypeScript",
+      "topics": [
+        "shadcn",
+        "shadcn-theme",
+        "shadcn-theme-editor",
+        "shadcn-ui",
+        "tailwindcss",
+        "tailwindcss-v4"
+      ]
+    },
+    {
+      "name": "u3u/nextui",
+      "url": "https://github.com/u3u/nextui",
+      "description": "🚀   Beautiful, fast and modern React UI library.",
+      "stars": 1,
+      "language": "TypeScript",
+      "topics": []
+    },
+    {
+      "name": "uiverse-io/galaxy",
+      "url": "https://github.com/uiverse-io/galaxy",
+      "description": "The largest Open-Source UI Library! Community-made and free to use. Made with either CSS or Tailwind.",
+      "stars": 12214,
+      "language": "HTML",
+      "topics": [
+        "community",
+        "css",
+        "tailwind",
+        "ui"
       ]
     }
   ],
@@ -1323,6 +1230,42 @@
         "llm",
         "mcp"
       ]
+    },
+    {
+      "name": "Graphify-Labs/graphify",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "description": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.",
+      "stars": 111872,
+      "language": "Python",
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor",
+        "developer-tools",
+        "gemini",
+        "graphrag",
+        "knowledge-graph",
+        "leiden",
+        "llm",
+        "mcp",
+        "openclaw",
+        "rag",
+        "skills",
+        "tree-sitter"
+      ]
+    },
+    {
+      "name": "witt3rd/oh-my-hermes",
+      "url": "https://github.com/witt3rd/oh-my-hermes",
+      "description": "Oh My Hermes (OMH) — Multi-agent orchestration skills for Hermes Agent. Inspired by oh-my-claudecode, rebuilt natively for Hermes primitives.",
+      "stars": 293,
+      "language": "Python",
+      "topics": []
     }
   ],
   "AI Learning & Courses": [
@@ -1366,14 +1309,6 @@
       "description": "A cute running cat animation on your windows taskbar.",
       "stars": 10280,
       "language": "C#",
-      "topics": []
-    },
-    {
-      "name": "orailnoor/DroidDesk",
-      "url": "https://github.com/orailnoor/DroidDesk",
-      "description": "DroidDesk turns your Android phone into a real Linux desktop using Termux, Termux X11, TUR, and Proot. Run VS Code, Firefox, LibreOffice, Blender, and more with X11 or VNC support for monitor setup.",
-      "stars": 3410,
-      "language": "Kotlin",
       "topics": []
     },
     {
@@ -1536,6 +1471,35 @@
         "security",
         "vulnerability"
       ]
+    },
+    {
+      "name": "usestrix/strix",
+      "url": "https://github.com/usestrix/strix",
+      "description": "Open-source AI penetration testing tool to find and fix your app’s vulnerabilities.",
+      "stars": 59036,
+      "language": "Python",
+      "topics": [
+        "agents",
+        "ai-hacking",
+        "ai-penetration-testing",
+        "ai-pentesting",
+        "ai-security",
+        "artificial-intelligence",
+        "bug-bounty",
+        "code-quality",
+        "ctf-tools",
+        "cybersecurity",
+        "cybersecurity-tools",
+        "ethical-hacking",
+        "hacking",
+        "llm-security",
+        "offensive-security",
+        "penetration-testing",
+        "pentesting-tools",
+        "red-teaming",
+        "security",
+        "security-automation"
+      ]
     }
   ],
   "Free Resources & Open Source Lists": [
@@ -1553,109 +1517,6 @@
         "hacktoberfest",
         "startpage",
         "startpages"
-      ]
-    },
-    {
-      "name": "trimstray/the-practical-linux-hardening-guide",
-      "url": "https://github.com/trimstray/the-practical-linux-hardening-guide",
-      "description": "This guide details creating a secure Linux production system. OpenSCAP (C2S/CIS, STIG).",
-      "stars": 10821,
-      "language": null,
-      "topics": [
-        "audit",
-        "centos",
-        "checklist",
-        "cis",
-        "guide",
-        "hardening",
-        "linux",
-        "linux-hardening",
-        "linux-security",
-        "manual",
-        "openscap",
-        "pci-dss",
-        "redhat-enterprise-linux",
-        "security"
-      ]
-    },
-    {
-      "name": "trimstray/linux-hardening-checklist",
-      "url": "https://github.com/trimstray/linux-hardening-checklist",
-      "description": "Simple checklist to help you deploying the most important areas of the GNU/Linux production systems - work in progress.",
-      "stars": 1642,
-      "language": null,
-      "topics": []
-    },
-    {
-      "name": "dharmx/walls",
-      "url": "https://github.com/dharmx/walls",
-      "description": "All of my wallpapers in one repo.",
-      "stars": 8694,
-      "language": null,
-      "topics": [
-        "anime",
-        "consious",
-        "dracula",
-        "everblush",
-        "everforest",
-        "gruvbox",
-        "javacafe",
-        "material",
-        "nord",
-        "ocean",
-        "portrait",
-        "radium",
-        "wallpapers"
-      ]
-    },
-    {
-      "name": "ashishps1/awesome-system-design-resources",
-      "url": "https://github.com/ashishps1/awesome-system-design-resources",
-      "description": "Learn System Design concepts and prepare for interviews using free resources.",
-      "stars": 41005,
-      "language": "Java",
-      "topics": [
-        "awesome",
-        "backend",
-        "computer-science",
-        "distributed-systems",
-        "high-level-design",
-        "hld",
-        "interview",
-        "interview-questions",
-        "scalability",
-        "system-design"
-      ]
-    },
-    {
-      "name": "arpitbbhayani/system-design-questions",
-      "url": "https://github.com/arpitbbhayani/system-design-questions",
-      "description": "A no-fluff and highly practical masterclass that reignites engineering curiosity and helps SDE-2, SDE-3, and above become great at designing, implementing, and shipping scalable, fault-tolerant, and highly available systems at the workplace.",
-      "stars": 3120,
-      "language": "Python",
-      "topics": [
-        "coursework",
-        "distributed-systems",
-        "hacktoberfest",
-        "system-design",
-        "system-design-interview",
-        "system-design-project",
-        "system-design-questions"
-      ]
-    },
-    {
-      "name": "jnsahaj/tweakcn",
-      "url": "https://github.com/jnsahaj/tweakcn",
-      "description": "A visual no-code theme editor for shadcn/ui components",
-      "stars": 10320,
-      "language": "TypeScript",
-      "topics": [
-        "shadcn",
-        "shadcn-theme",
-        "shadcn-theme-editor",
-        "shadcn-ui",
-        "tailwindcss",
-        "tailwindcss-v4"
       ]
     },
     {
@@ -1761,20 +1622,6 @@
       ]
     },
     {
-      "name": "steipete/agent-rules",
-      "url": "https://github.com/steipete/agent-rules",
-      "description": "Rules and Knowledge to work better with agents such as Claude Code or Cursor",
-      "stars": 5696,
-      "language": "Shell",
-      "topics": [
-        "agent",
-        "claudecode",
-        "cursor",
-        "llms",
-        "rules"
-      ]
-    },
-    {
       "name": "ripienaar/free-for-dev",
       "url": "https://github.com/ripienaar/free-for-dev",
       "description": "A list of SaaS, PaaS and IaaS offerings that have free tiers of interest to devops and infradev",
@@ -1851,69 +1698,6 @@
         "unstable",
         "upscaling",
         "web"
-      ]
-    },
-    {
-      "name": "u3u/nextui",
-      "url": "https://github.com/u3u/nextui",
-      "description": "🚀   Beautiful, fast and modern React UI library.",
-      "stars": 1,
-      "language": "TypeScript",
-      "topics": []
-    },
-    {
-      "name": "uiverse-io/galaxy",
-      "url": "https://github.com/uiverse-io/galaxy",
-      "description": "The largest Open-Source UI Library! Community-made and free to use. Made with either CSS or Tailwind.",
-      "stars": 12214,
-      "language": "HTML",
-      "topics": [
-        "community",
-        "css",
-        "tailwind",
-        "ui"
-      ]
-    },
-    {
-      "name": "leaningtech/webvm",
-      "url": "https://github.com/leaningtech/webvm",
-      "description": "Virtual Machine for the Web",
-      "stars": 17356,
-      "language": "JavaScript",
-      "topics": [
-        "cheerp",
-        "cheerpx",
-        "cpp",
-        "lwip",
-        "repl",
-        "tailscale",
-        "vm",
-        "wasm",
-        "webassembly",
-        "webvm",
-        "xterm-js"
-      ]
-    },
-    {
-      "name": "donnemartin/system-design-primer",
-      "url": "https://github.com/donnemartin/system-design-primer",
-      "description": "Learn how to design large-scale systems. Prep for the system design interview.  Includes Anki flashcards.",
-      "stars": 366536,
-      "language": "Python",
-      "topics": [
-        "design",
-        "design-patterns",
-        "design-system",
-        "development",
-        "interview",
-        "interview-practice",
-        "interview-questions",
-        "programming",
-        "python",
-        "system",
-        "web",
-        "web-application",
-        "webapp"
       ]
     },
     {
@@ -1999,41 +1783,6 @@
       ]
     },
     {
-      "name": "songquanpeng/one-api",
-      "url": "https://github.com/songquanpeng/one-api",
-      "description": "LLM API 管理 & 分发系统，支持 OpenAI、Azure、Anthropic Claude、Google Gemini、DeepSeek、字节豆包、ChatGLM、文心一言、讯飞星火、通义千问、360 智脑、腾讯混元等主流模型，统一 API 适配，可用于 key 管理与二次分发。单可执行文件，提供 Docker 镜像，一键部署，开箱即用。LLM API management & key redistribution system, unifying multiple providers under a single API. Single binary, Docker-ready, with an English UI.",
-      "stars": 36632,
-      "language": "JavaScript",
-      "topics": [
-        "api",
-        "api-gateway",
-        "azure-openai-api",
-        "chatgpt",
-        "claude",
-        "ernie-bot",
-        "gemini",
-        "gpt",
-        "openai",
-        "openai-api",
-        "proxy"
-      ]
-    },
-    {
-      "name": "winboat-org/winboat",
-      "url": "https://github.com/winboat-org/winboat",
-      "description": "Run Windows apps on 🐧 Linux with ✨ seamless integration",
-      "stars": 22569,
-      "language": "TypeScript",
-      "topics": [
-        "docker",
-        "docker-compose",
-        "linux",
-        "rdp",
-        "virtualization",
-        "windows"
-      ]
-    },
-    {
       "name": "tommygeoco/mosaic-pro",
       "url": "https://github.com/tommygeoco/mosaic-pro",
       "description": "",
@@ -2092,25 +1841,6 @@
       "stars": 1913,
       "language": "TypeScript",
       "topics": []
-    },
-    {
-      "name": "librepods-org/librepods",
-      "url": "https://github.com/librepods-org/librepods",
-      "description": "AirPods liberated from Apple's ecosystem.",
-      "stars": 29605,
-      "language": "Kotlin",
-      "topics": [
-        "accessiblity",
-        "airpods",
-        "android",
-        "battery-monitor",
-        "conversational-awareness",
-        "ear-detection",
-        "hearing-aid",
-        "hearing-aids",
-        "linux",
-        "reverse-engineering"
-      ]
     },
     {
       "name": "LGUG2Z/komorebi",
@@ -2237,14 +1967,6 @@
   ],
   "Linux & Terminal": [
     {
-      "name": "witt3rd/oh-my-hermes",
-      "url": "https://github.com/witt3rd/oh-my-hermes",
-      "description": "Oh My Hermes (OMH) — Multi-agent orchestration skills for Hermes Agent. Inspired by oh-my-claudecode, rebuilt natively for Hermes primitives.",
-      "stars": 293,
-      "language": "Python",
-      "topics": []
-    },
-    {
       "name": "lnqs/textual-image",
       "url": "https://github.com/lnqs/textual-image",
       "description": "Render images in the terminal with Textual and rich",
@@ -2327,6 +2049,289 @@
         "uefi",
         "x86-64"
       ]
+    },
+    {
+      "name": "trimstray/the-practical-linux-hardening-guide",
+      "url": "https://github.com/trimstray/the-practical-linux-hardening-guide",
+      "description": "This guide details creating a secure Linux production system. OpenSCAP (C2S/CIS, STIG).",
+      "stars": 10821,
+      "language": null,
+      "topics": [
+        "audit",
+        "centos",
+        "checklist",
+        "cis",
+        "guide",
+        "hardening",
+        "linux",
+        "linux-hardening",
+        "linux-security",
+        "manual",
+        "openscap",
+        "pci-dss",
+        "redhat-enterprise-linux",
+        "security"
+      ]
+    },
+    {
+      "name": "trimstray/linux-hardening-checklist",
+      "url": "https://github.com/trimstray/linux-hardening-checklist",
+      "description": "Simple checklist to help you deploying the most important areas of the GNU/Linux production systems - work in progress.",
+      "stars": 1642,
+      "language": null,
+      "topics": []
+    }
+  ],
+  "AI Skills & Context": [
+    {
+      "name": "ayghri/i-have-adhd",
+      "url": "https://github.com/ayghri/i-have-adhd",
+      "description": "A skill to stop your coding agent from burying the answer. ADHD-friendly output.",
+      "stars": 25254,
+      "language": "Python",
+      "topics": [
+        "adhd",
+        "claude-",
+        "claude-code-plugin",
+        "claude-skills",
+        "developer-tools",
+        "productivity"
+      ]
+    },
+    {
+      "name": "DietrichGebert/ponytail",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "description": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
+      "stars": 115004,
+      "language": "JavaScript",
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm",
+        "prompt-engineering",
+        "yagni"
+      ]
+    },
+    {
+      "name": "JuliusBrussee/caveman",
+      "url": "https://github.com/JuliusBrussee/caveman",
+      "description": "🪨 why use many token when few token do trick — Claude Code skill that cuts 65% of tokens by talking like caveman",
+      "stars": 101575,
+      "language": "Go",
+      "topics": [
+        "ai",
+        "anthropic",
+        "caveman",
+        "claude",
+        "claude-code",
+        "llm",
+        "meme",
+        "prompt-engineering",
+        "skill",
+        "tokens"
+      ]
+    },
+    {
+      "name": "steipete/agent-rules",
+      "url": "https://github.com/steipete/agent-rules",
+      "description": "Rules and Knowledge to work better with agents such as Claude Code or Cursor",
+      "stars": 5696,
+      "language": "Shell",
+      "topics": [
+        "agent",
+        "claudecode",
+        "cursor",
+        "llms",
+        "rules"
+      ]
+    },
+    {
+      "name": "Leonxlnx/taste-skill",
+      "url": "https://github.com/Leonxlnx/taste-skill",
+      "description": "Taste-Skill - gives your AI good taste. stops the AI from generating boring, generic slop ",
+      "stars": 81809,
+      "language": "JavaScript",
+      "topics": [
+        "agent",
+        "ai",
+        "claude",
+        "claude-code",
+        "codex",
+        "coding",
+        "design",
+        "frontend",
+        "lowcode",
+        "nocode",
+        "skill",
+        "skills",
+        "vibecoding"
+      ]
+    },
+    {
+      "name": "virgiliojr94/book-to-skill",
+      "url": "https://github.com/virgiliojr94/book-to-skill",
+      "description": "Turn any technical book PDF into a Claude Code skill — ready to study, reference, and use while you work.",
+      "stars": 26569,
+      "language": "Python",
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "book-to-skill",
+        "context-engineering",
+        "document-processing",
+        "edtech",
+        "knowledge-base",
+        "knowledge-management",
+        "llm",
+        "pdf-to-markdown",
+        "rag",
+        "self-study",
+        "study-tools"
+      ]
+    },
+    {
+      "name": "google-labs-code/design.md",
+      "url": "https://github.com/google-labs-code/design.md",
+      "description": "A format specification for describing a visual identity to coding agents. DESIGN.md gives agents a persistent, structured understanding of a design system.",
+      "stars": 27575,
+      "language": "TypeScript",
+      "topics": []
+    }
+  ],
+  "Self-Hosted & Architecture": [
+    {
+      "name": "caamer20/Telegram-Drive",
+      "url": "https://github.com/caamer20/Telegram-Drive",
+      "description": "Turn your Telegram account into an unlimited, secure cloud storage drive. an Open-source desktop app built with Tauri, Rust, and React.",
+      "stars": 4852,
+      "language": "TypeScript",
+      "topics": [
+        "open-source",
+        "react",
+        "rust",
+        "tauri",
+        "telegram",
+        "telegramapi",
+        "typescript"
+      ]
+    },
+    {
+      "name": "zenhosta/9drive",
+      "url": "https://github.com/zenhosta/9drive",
+      "description": "9Drive is a storage gateway web app for connecting multiple Google Drive accounts into one virtual storage dashboard. Users can connect Google Drive accounts, track quota, upload files, organize files with virtual folders, preview files, and let the backend route uploads to the Drive account with enough free space.",
+      "stars": 1830,
+      "language": "TypeScript",
+      "topics": [
+        "drive",
+        "gateway",
+        "proxy",
+        "storage"
+      ]
+    },
+    {
+      "name": "leaningtech/webvm",
+      "url": "https://github.com/leaningtech/webvm",
+      "description": "Virtual Machine for the Web",
+      "stars": 17356,
+      "language": "JavaScript",
+      "topics": [
+        "cheerp",
+        "cheerpx",
+        "cpp",
+        "lwip",
+        "repl",
+        "tailscale",
+        "vm",
+        "wasm",
+        "webassembly",
+        "webvm",
+        "xterm-js"
+      ]
+    },
+    {
+      "name": "songquanpeng/one-api",
+      "url": "https://github.com/songquanpeng/one-api",
+      "description": "LLM API 管理 & 分发系统，支持 OpenAI、Azure、Anthropic Claude、Google Gemini、DeepSeek、字节豆包、ChatGLM、文心一言、讯飞星火、通义千问、360 智脑、腾讯混元等主流模型，统一 API 适配，可用于 key 管理与二次分发。单可执行文件，提供 Docker 镜像，一键部署，开箱即用。LLM API management & key redistribution system, unifying multiple providers under a single API. Single binary, Docker-ready, with an English UI.",
+      "stars": 36632,
+      "language": "JavaScript",
+      "topics": [
+        "api",
+        "api-gateway",
+        "azure-openai-api",
+        "chatgpt",
+        "claude",
+        "ernie-bot",
+        "gemini",
+        "gpt",
+        "openai",
+        "openai-api",
+        "proxy"
+      ]
+    }
+  ],
+  "Utilities & Scripts": [
+    {
+      "name": "sam1am/anyapk",
+      "url": "https://github.com/sam1am/anyapk",
+      "description": "Install any apk on the device you own. ",
+      "stars": 2684,
+      "language": "Kotlin",
+      "topics": []
+    },
+    {
+      "name": "winboat-org/winboat",
+      "url": "https://github.com/winboat-org/winboat",
+      "description": "Run Windows apps on 🐧 Linux with ✨ seamless integration",
+      "stars": 22569,
+      "language": "TypeScript",
+      "topics": [
+        "docker",
+        "docker-compose",
+        "linux",
+        "rdp",
+        "virtualization",
+        "windows"
+      ]
+    },
+    {
+      "name": "librepods-org/librepods",
+      "url": "https://github.com/librepods-org/librepods",
+      "description": "AirPods liberated from Apple's ecosystem.",
+      "stars": 29605,
+      "language": "Kotlin",
+      "topics": [
+        "accessiblity",
+        "airpods",
+        "android",
+        "battery-monitor",
+        "conversational-awareness",
+        "ear-detection",
+        "hearing-aid",
+        "hearing-aids",
+        "linux",
+        "reverse-engineering"
+      ]
+    },
+    {
+      "name": "apinanaivot/IKEA-3D-Model-Download-Button",
+      "url": "https://github.com/apinanaivot/IKEA-3D-Model-Download-Button",
+      "description": "Adds ability to download models from IKEA website",
+      "stars": 1437,
+      "language": "JavaScript",
+      "topics": []
+    },
+    {
+      "name": "orailnoor/DroidDesk",
+      "url": "https://github.com/orailnoor/DroidDesk",
+      "description": "DroidDesk turns your Android phone into a real Linux desktop using Termux, Termux X11, TUR, and Proot. Run VS Code, Firefox, LibreOffice, Blender, and more with X11 or VNC support for monitor setup.",
+      "stars": 3410,
+      "language": "Kotlin",
+      "topics": []
     }
   ]
 }
