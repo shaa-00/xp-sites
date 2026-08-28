@@ -20,25 +20,21 @@ const quicksand = Quicksand({
 })
 
 export const metadata: Metadata = {
-  title: 'XP-Farm | Link Collection',
-  description: 'A minimalist collection of curated websites and resources',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+  title: 'XP-Farm | Curated Developer & AI Links',
+  description: 'A minimalist collection of curated developer tools, AI agents, MCP resources, and open-source bookmarks.',
+  metadataBase: new URL('https://xp-sites.vercel.app'),
+  openGraph: {
+    title: 'XP-Farm | Curated Developer & AI Links',
+    description: 'A minimalist collection of curated developer tools, AI agents, MCP resources, and open-source bookmarks.',
+    url: 'https://xp-sites.vercel.app',
+    siteName: 'XP-Farm',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'XP-Farm | Curated Developer & AI Links',
+    description: 'A minimalist collection of curated developer tools, AI agents, MCP resources, and open-source bookmarks.',
   },
 }
 

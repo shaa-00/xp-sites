@@ -1,12 +1,12 @@
 'use client'
 
-import { memo, useState, useEffect } from 'react'
-import { ExternalLink, Trash2, GitFork } from 'lucide-react'
+import { memo } from 'react'
+import { ExternalLink, Bot, GraduationCap, Wrench, Plug, Palette, Sparkles, Building2, Monitor, Terminal, BookOpen, Shield, Rocket, Image as ImageIcon, LayoutTemplate, Brush, Tag, BookMarked, Hammer, Server } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
 import { useIsClient } from '@/hooks/use-is-client'
 
-interface BookmarkData {
+interface LinkItem {
   title: string
   url: string
   description?: string
@@ -15,35 +15,40 @@ interface BookmarkData {
 
 interface CategorySectionProps {
   category: string
-  links: BookmarkData[]
-  onDelete: (url: string) => void
+  links: LinkItem[]
 }
 
-const categoryColors: Record<string, { bg: string; text: string; border: string }> = {
-  'Design & UI': { bg: 'bg-blue-500/10', text: 'text-blue-600 dark:text-blue-400', border: 'border-blue-200 dark:border-blue-800' },
-  'AI & ML': { bg: 'bg-purple-500/10', text: 'text-purple-600 dark:text-purple-400', border: 'border-purple-200 dark:border-purple-800' },
-  'Development': { bg: 'bg-green-500/10', text: 'text-green-600 dark:text-green-400', border: 'border-green-200 dark:border-green-800' },
-  'Cloud & DevOps': { bg: 'bg-orange-500/10', text: 'text-orange-600 dark:text-orange-400', border: 'border-orange-200 dark:border-orange-800' },
-  'Learning': { bg: 'bg-yellow-500/10', text: 'text-yellow-600 dark:text-yellow-400', border: 'border-yellow-200 dark:border-yellow-800' },
-  'Art & Creative': { bg: 'bg-pink-500/10', text: 'text-pink-600 dark:text-pink-400', border: 'border-pink-200 dark:border-pink-800' },
-  'Tools & Resources': { bg: 'bg-cyan-500/10', text: 'text-cyan-600 dark:text-cyan-400', border: 'border-cyan-200 dark:border-cyan-800' },
-  'VPN & Security': { bg: 'bg-red-500/10', text: 'text-red-600 dark:text-red-400', border: 'border-red-200 dark:border-red-800' },
-  'Entertainment': { bg: 'bg-indigo-500/10', text: 'text-indigo-600 dark:text-indigo-400', border: 'border-indigo-200 dark:border-indigo-800' },
-  'Productivity': { bg: 'bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-800' },
-  'Social & Community': { bg: 'bg-violet-500/10', text: 'text-violet-600 dark:text-violet-400', border: 'border-violet-200 dark:border-violet-800' },
+// Fixed category -> visual mapping. Categories come from a fixed list (see
+// scripts/categorize.mjs), so this is a static lookup. Unknown categories fall
+// back to a neutral gray style instead of crashing (spec §6.6). Icons are
+// monochrome Lucide glyphs that inherit the category accent color (currentColor).
+const CATEGORY_STYLES: Record<string, { bg: string; text: string; border: string; icon: LucideIcon }> = {
+  'AI Tools & Agents': { bg: 'bg-purple-500/10', text: 'text-purple-600 dark:text-purple-400', border: 'border-purple-200 dark:border-purple-800', icon: Bot },
+  'AI Learning & Courses': { bg: 'bg-violet-500/10', text: 'text-violet-600 dark:text-violet-400', border: 'border-violet-200 dark:border-violet-800', icon: GraduationCap },
+  'Developer Tools & Productivity': { bg: 'bg-green-500/10', text: 'text-green-600 dark:text-green-400', border: 'border-green-200 dark:border-green-800', icon: Wrench },
+  'MCP & Agent Infrastructure': { bg: 'bg-teal-500/10', text: 'text-teal-600 dark:text-teal-400', border: 'border-teal-200 dark:border-teal-800', icon: Plug },
+  'Design Resources': { bg: 'bg-blue-500/10', text: 'text-blue-600 dark:text-blue-400', border: 'border-blue-200 dark:border-blue-800', icon: Palette },
+  'UI Components & Animation': { bg: 'bg-indigo-500/10', text: 'text-indigo-600 dark:text-indigo-400', border: 'border-indigo-200 dark:border-indigo-800', icon: Sparkles },
+  'System Design & CS Fundamentals': { bg: 'bg-cyan-500/10', text: 'text-cyan-600 dark:text-cyan-400', border: 'border-cyan-200 dark:border-cyan-800', icon: Building2 },
+  'Windows Ricing & Customization': { bg: 'bg-sky-500/10', text: 'text-sky-600 dark:text-sky-400', border: 'border-sky-200 dark:border-sky-800', icon: Monitor },
+  'Linux & Terminal': { bg: 'bg-amber-500/10', text: 'text-amber-600 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-800', icon: Terminal },
+  'Free Resources & Open Source Lists': { bg: 'bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-800', icon: BookOpen },
+  'Privacy & Security': { bg: 'bg-red-500/10', text: 'text-red-600 dark:text-red-400', border: 'border-red-200 dark:border-red-800', icon: Shield },
+  'Learning & Career': { bg: 'bg-yellow-500/10', text: 'text-yellow-600 dark:text-yellow-400', border: 'border-yellow-200 dark:border-yellow-800', icon: Rocket },
+  'Wallpapers & Aesthetics': { bg: 'bg-pink-500/10', text: 'text-pink-600 dark:text-pink-400', border: 'border-pink-200 dark:border-pink-800', icon: ImageIcon },
+  'Framer & Portfolio Templates': { bg: 'bg-orange-500/10', text: 'text-orange-600 dark:text-orange-400', border: 'border-orange-200 dark:border-orange-800', icon: LayoutTemplate },
+  'Anime & Art': { bg: 'bg-rose-500/10', text: 'text-rose-600 dark:text-rose-400', border: 'border-rose-200 dark:border-rose-800', icon: Brush },
+  'AI Skills & Context': { bg: 'bg-fuchsia-500/10', text: 'text-fuchsia-600 dark:text-fuchsia-400', border: 'border-fuchsia-200 dark:border-fuchsia-800', icon: BookMarked },
+  'Utilities & Scripts': { bg: 'bg-lime-500/10', text: 'text-lime-600 dark:text-lime-400', border: 'border-lime-200 dark:border-lime-800', icon: Hammer },
+  'Self-Hosted & Architecture': { bg: 'bg-slate-500/10', text: 'text-slate-600 dark:text-slate-400', border: 'border-slate-200 dark:border-slate-800', icon: Server },
 }
 
-const getColorForCategory = (category: string) => {
-  return categoryColors[category] || {
-    bg: 'bg-gray-500/10',
-    text: 'text-gray-600 dark:text-gray-400',
-    border: 'border-gray-200 dark:border-gray-800',
-  }
-}
+const FALLBACK_STYLE = { bg: 'bg-gray-500/10', text: 'text-gray-600 dark:text-gray-400', border: 'border-gray-200 dark:border-gray-800', icon: Tag }
 
-function CategorySection({ category, links, onDelete }: CategorySectionProps) {
+function CategorySection({ category, links }: CategorySectionProps) {
   const isClient = useIsClient()
-  const colors = getColorForCategory(category)
+  const colors = CATEGORY_STYLES[category] || FALLBACK_STYLE
+  const Icon = colors.icon
 
   return (
     <motion.div
@@ -53,14 +58,12 @@ function CategorySection({ category, links, onDelete }: CategorySectionProps) {
       transition={{ duration: 0.5 }}
     >
       <div className="space-y-4">
-        {/* Category Header */}
         <div className="flex items-center gap-2">
-          <div className={`h-1 w-1 rounded-full ${colors.text}`} />
+          <Icon className={`h-5 w-5 ${colors.text}`} />
           <h2 className={`text-xl font-semibold ${colors.text}`}>{category}</h2>
           <span className="text-xs text-muted-foreground">({links.length})</span>
         </div>
 
-        {/* Links Grid */}
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {links.map((link) => (
             <motion.a
@@ -89,18 +92,6 @@ function CategorySection({ category, links, onDelete }: CategorySectionProps) {
                 </div>
                 {isClient && <ExternalLink className="h-4 w-4 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity" />}
               </div>
-
-              {/* Delete Button */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  onDelete(link.url)
-                }}
-                className="absolute -right-2 -top-2 rounded-full bg-background border border-border p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/10 cursor-pointer"
-                title="Delete link"
-              >
-                {isClient && <Trash2 className="h-3 w-3 text-red-500" />}
-              </button>
             </motion.a>
           ))}
         </div>
