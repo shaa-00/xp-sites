@@ -23,7 +23,10 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 4)
+    const onScroll = () => {
+      const next = window.scrollY > 16
+      setScrolled((prev) => (prev === next ? prev : next))
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -76,7 +79,7 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
   return (
     <>
       <header className="sticky top-0 z-30 px-4 pt-3 sm:px-6">
-        <div className={`mx-auto relative flex max-w-4xl items-center justify-between gap-3 rounded-2xl border border-border/60 bg-background/70 px-2.5 py-2 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_8px_28px_rgba(0,0,0,0.10)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/50 transition-[max-width,gap] duration-300 ease-out ${scrolled ? 'max-w-2xl gap-1' : 'max-w-4xl gap-3'}`}>
+        <div className={`mx-auto relative flex items-center justify-between gap-3 rounded-2xl border border-border/60 px-2.5 py-2 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_8px_28px_rgba(0,0,0,0.10)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/50 transition-[max-width,background-color] duration-300 ease-out motion-reduce:transition-none ${scrolled ? 'max-w-3xl bg-background/80' : 'max-w-4xl bg-background/70'}`}>
           <a
             href="/"
             className="flex items-center rounded-xl px-1.5 py-0.5 outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary/30"
