@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Search, Bookmark } from 'iconoir-react'
 import ExportLinkGrid from '@/components/export-link-grid'
 import { type LinkItem } from '@/components/category-section'
@@ -20,6 +20,14 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
   const [filteredCategory, setFilteredCategory] = useState<string | null>(null)
   const [filteredLink, setFilteredLink] = useState<string | null>(null)
   const [showFloatingSearch, setShowFloatingSearch] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const bookmarks = useMemo(
     () => Object.values(categorized).flat(),
@@ -68,10 +76,11 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
   return (
     <>
       <header className="sticky top-0 z-30 px-4 pt-3 sm:px-6">
-        <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 rounded-2xl border border-border/60 bg-background/70 px-2.5 py-2 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_8px_28px_rgba(0,0,0,0.10)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/50">
+        <div className={`mx-auto relative flex max-w-4xl items-center justify-between gap-3 rounded-2xl border border-border/60 bg-background/70 px-2.5 py-2 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_8px_28px_rgba(0,0,0,0.10)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/50 transition-[max-width,gap] duration-300 ease-out ${scrolled ? 'max-w-2xl gap-1' : 'max-w-4xl gap-3'}`}>
           <a
             href="/"
-            className="flex items-center gap-2.5 rounded-xl px-1.5 py-0.5 outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary/30"
+            className="flex items-center rounded-xl px-1.5 py-0.5 outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary/30"
+            aria-label="xp-sites home"
           >
             <img
               src="/xp-icon.png"
@@ -80,10 +89,11 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
               height={28}
               className="h-7 w-7 rounded-md dark:invert"
             />
-            <span className="text-base font-semibold tracking-tight text-foreground">
-              xp-sites
-            </span>
           </a>
+
+          <span className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-base font-semibold tracking-tight text-foreground">
+            xp-sites
+          </span>
 
           <div className="flex items-center gap-1.5">
             <button
