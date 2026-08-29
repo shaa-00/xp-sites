@@ -22,13 +22,23 @@ interface SearchBarProps {
   categorized: Record<string, BookmarkData[]>
   onFilter: (type: 'category' | 'link', value: string) => void
   onClose: () => void
+  shouldFocusOnMount?: boolean
 }
 
-function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps) {
+function SearchBar({ bookmarks, categorized, onFilter, onClose, shouldFocusOnMount = false }: SearchBarProps) {
   const [query, setQuery] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
   const containerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // Auto-focus the input when this SearchBar is opened as a floating modal
+  // so the user can start typing immediately without an extra click.
+  useEffect(() => {
+    if (shouldFocusOnMount) {
+      inputRef.current?.focus()
+    }
+  }, [shouldFocusOnMount])
 
   // Defer the expensive filter so typing stays responsive (protects INP).
   // The input value updates immediately; the results recompute on a lower
@@ -125,13 +135,14 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
   }, [isFocused])
 
   return (
-    <div ref={containerRef} className="sticky top-16 z-20 mb-8 px-4 mt-3" onWheel={handleContainerWheel}>
+    <div ref={containerRef} className="sticky top-[80px] z-20 mb-8 px-4 mt-3" onWheel={handleContainerWheel}>
       <div className="mx-auto max-w-4xl">
         <div className="relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
             <Search className="h-4 w-4" />
           </div>
           <input
+            ref={inputRef}
             type="text"
             placeholder="Search categories or links..."
             value={query}

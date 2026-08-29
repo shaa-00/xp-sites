@@ -8,21 +8,6 @@ import { getDisplayCategories } from '@/lib/category-order'
 import SearchBar from '@/components/search-bar'
 import { ThemeToggle } from '@/components/theme-toggle'
 
-// Lucide dropped brand icons, so the GitHub mark is inlined as a monochrome
-// glyph that inherits currentColor (matching the rest of the header icons).
-function GitHubMark({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z" />
-    </svg>
-  )
-}
-
 interface LinkExplorerProps {
   categorized: Record<string, LinkItem[]>
   // Server-rendered full grid passed down from page.tsx. Keeping it in the
@@ -41,7 +26,6 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
     [categorized]
   )
   const totalLinks = bookmarks.length
-  const githubCount = bookmarks.filter((b) => b.isGitHub).length
 
   const handleFilter = (type: 'category' | 'link', value: string) => {
     if (type === 'category') {
@@ -83,49 +67,37 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                XP-Farm
-              </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                A curated collection of resources and inspiration
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setShowFloatingSearch(true)}
-                className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
-                aria-label="Search"
-              >
-                <Search className="w-4 h-4" />
-              </button>
-              <ThemeToggle />
-              <div className="flex flex-col items-end text-xs text-muted-foreground leading-tight">
-                <span className="flex items-center gap-1.5">
-                  <Bookmark className="w-3.5 h-3.5" />
-                  {totalLinks} links
-                </span>
-                <span className="flex items-center gap-1.5 text-muted-foreground">
-                  <GitHubMark className="w-3.5 h-3.5" />
-                  {githubCount} from GitHub
-                </span>
-              </div>
-            </div>
+      <header className="sticky top-0 z-30 px-4 pt-3 sm:px-6">
+        <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 rounded-2xl border border-border/60 bg-background/70 px-2.5 py-2 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_8px_28px_rgba(0,0,0,0.10)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/50">
+          <a
+            href="/"
+            className="flex items-center gap-2.5 rounded-xl px-1.5 py-0.5 outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary/30"
+          >
+            <img src="/xp-icon.png" alt="xp-sites" className="h-7 w-7 rounded-md dark:invert" />
+            <span className="text-base font-semibold tracking-tight text-foreground">
+              xp-sites
+            </span>
+          </a>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setShowFloatingSearch(true)}
+              className="flex items-center gap-2 rounded-xl bg-primary/10 px-2.5 py-2 text-primary transition-colors hover:bg-primary/20 active:scale-[0.98]"
+              aria-label="Search"
+            >
+              <Search className="h-4 w-4" />
+              <span className="hidden text-xs font-medium sm:inline">Search</span>
+            </button>
+            <ThemeToggle />
+            <span className="hidden items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground sm:flex">
+              <Bookmark className="h-3 w-3" />
+              {totalLinks} links
+            </span>
           </div>
         </div>
       </header>
 
-      <SearchBar
-        bookmarks={bookmarks}
-        categorized={categorized}
-        onFilter={handleFilter}
-        onClose={clearFilter}
-      />
-
-      <main className="mx-auto max-w-4xl px-4 pb-12 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-4xl px-4 mt-12 pb-12 sm:px-6 lg:px-8">
         {(filteredCategory || filteredLink) && (
           <div className="mb-8 flex items-center justify-between rounded-lg border border-border/50 bg-primary/5 p-4">
             <div>
@@ -189,6 +161,7 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
                 setShowFloatingSearch(false)
               }}
               onClose={() => setShowFloatingSearch(false)}
+              shouldFocusOnMount
             />
           </div>
         </div>
