@@ -1,26 +1,28 @@
 import {
-  ExternalLink,
-  Bot,
+  OpenInBrowser as ExternalLink,
+  Cpu as Bot,
   GraduationCap,
   Wrench,
-  Plug,
+  PlugTypeC as Plug,
   Palette,
-  Sparkles,
-  Building2,
-  Monitor,
+  Sparks as Sparkles,
+  Building as Building2,
+  Computer as Monitor,
   Terminal,
-  BookOpen,
+  OpenBook as BookOpen,
   Shield,
   Rocket,
-  Image as ImageIcon,
-  LayoutTemplate,
-  Brush,
-  BookMarked,
+  MediaImage as ImageIcon,
+  ViewGrid as LayoutTemplate,
+  DesignNib as Brush,
+  Bookmark as BookMarked,
   Hammer,
   Server,
-  Tag,
-} from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+  Pin as Tag,
+} from 'iconoir-react'
+
+// Every iconoir-react icon shares one component type; use it as the lookup type.
+type IconoirIcon = typeof ExternalLink
 
 export interface LinkItem {
   title: string
@@ -40,7 +42,7 @@ interface CategorySectionProps {
 // monochrome Lucide glyphs that inherit the category accent color (currentColor).
 const CATEGORY_STYLES: Record<
   string,
-  { bg: string; text: string; border: string; icon: LucideIcon }
+  { bg: string; text: string; border: string; icon: IconoirIcon }
 > = {
   'AI Tools & Agents': {
     bg: 'bg-purple-500/10',

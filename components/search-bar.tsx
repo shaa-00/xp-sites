@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useState, useCallback, useMemo, useEffect, useRef, useDeferredValue } from 'react'
-import { Search, X } from 'lucide-react'
+import { Search, X } from 'iconoir-react'
 
 interface BookmarkData {
   title: string

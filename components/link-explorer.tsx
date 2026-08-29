@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Search, Bookmark } from 'lucide-react'
+import { Search, Bookmark } from 'iconoir-react'
 import ExportLinkGrid from '@/components/export-link-grid'
 import { type LinkItem } from '@/components/category-section'
 import { getDisplayCategories } from '@/lib/category-order'
@@ -73,7 +73,13 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
             href="/"
             className="flex items-center gap-2.5 rounded-xl px-1.5 py-0.5 outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary/30"
           >
-            <img src="/xp-icon.png" alt="xp-sites" className="h-7 w-7 rounded-md dark:invert" />
+            <img
+              src="/xp-icon.png"
+              alt="xp-sites"
+              width={28}
+              height={28}
+              className="h-7 w-7 rounded-md dark:invert"
+            />
             <span className="text-base font-semibold tracking-tight text-foreground">
               xp-sites
             </span>

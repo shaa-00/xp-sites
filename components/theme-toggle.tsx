@@ -1,6 +1,6 @@
 'use client'
 
-import { Moon, Sun } from 'lucide-react'
+import { HalfMoon as Moon, SunLight as Sun } from 'iconoir-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 
