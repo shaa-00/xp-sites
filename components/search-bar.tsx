@@ -1,8 +1,7 @@
 'use client'
 
-import { memo, useState, useCallback, useMemo, useEffect, useRef } from 'react'
+import { memo, useState, useCallback, useMemo, useEffect, useRef, useDeferredValue } from 'react'
 import { Search, X } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
 
 interface BookmarkData {
   title: string
@@ -31,6 +30,11 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
   const [activeIndex, setActiveIndex] = useState(-1)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  // Defer the expensive filter so typing stays responsive (protects INP).
+  // The input value updates immediately; the results recompute on a lower
+  // priority pass. When the list grows large this keeps keystrokes smooth.
+  const deferredQuery = useDeferredValue(query)
+
   const categories = useMemo(() => Object.keys(categorized), [categorized])
 
   // Handle click outside to close dropdown
@@ -46,8 +50,9 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
   }, [])
 
   const results = useMemo(() => {
+    // Empty state is computed from the immediate query so clearing the input
+    // snaps back to all categories instantly; only the filtering is deferred.
     if (!query.trim()) {
-      // Show all categories when empty
       return categories.map(cat => ({
         type: 'category' as const,
         label: cat,
@@ -55,7 +60,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
       }))
     }
 
-    const normalizedQuery = query.toLowerCase().trim()
+    const normalizedQuery = deferredQuery.toLowerCase().trim()
     const categoryMatches = categories
       .filter(cat => cat.toLowerCase().includes(normalizedQuery))
       .map(cat => ({
@@ -76,7 +81,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
       }))
 
     return [...categoryMatches, ...linkMatches]
-  }, [query, categories, bookmarks, categorized])
+  }, [query, deferredQuery, categories, bookmarks, categorized])
 
   const handleSelect = useCallback((result: SearchResult) => {
     onFilter(result.type, result.value)
@@ -150,62 +155,55 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
             </button>
           )}
 
-          {/* Dropdown Results */}
-          <AnimatePresence>
-            {isFocused && results.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                onWheel={handleDropdownWheel}
-                className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-white/20 z-50 max-h-52 overflow-y-auto flex flex-col"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.06)',
-                  backdropFilter: 'blur(24px)',
-                  WebkitBackdropFilter: 'blur(24px)',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
-                }}
-              >
-                <ul className="flex-1">
-                  {results.map((result, index) => (
-                    <motion.li
-                      key={`${result.type}-${result.value}`}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.02 }}
+          {/* Dropdown Results — CSS enter animation replaces framer-motion */}
+          {isFocused && results.length > 0 && (
+            <div
+              onWheel={handleDropdownWheel}
+              className="xp-dropdown-in absolute top-full left-0 right-0 mt-2 rounded-xl border border-white/20 z-50 max-h-52 overflow-y-auto flex flex-col"
+              style={{
+                background: 'rgba(255, 255, 255, 0.06)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <ul className="flex-1">
+                {results.map((result, index) => (
+                  <li
+                    key={`${result.type}-${result.value}`}
+                    className={`xp-item-in w-full px-4 py-2.5 text-left text-sm transition-colors cursor-pointer ${
+                      activeIndex === index
+                        ? 'bg-primary/10 text-foreground'
+                        : 'hover:bg-muted'
+                    } ${result.type === 'category' ? 'border-b border-border/30 last:border-b-0' : ''}`}
+                    style={{ animationDelay: `${index * 0.02}s` }}
+                  >
+                    <button
+                      onClick={() => handleSelect(result)}
+                      className="w-full cursor-pointer"
                     >
-                      <button
-                        onClick={() => handleSelect(result)}
-                        className={`w-full px-4 py-2.5 text-left text-sm transition-colors cursor-pointer ${
-                          activeIndex === index
-                            ? 'bg-primary/10 text-foreground'
-                            : 'hover:bg-muted'
-                        } ${result.type === 'category' ? 'border-b border-border/30 last:border-b-0' : ''}`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="font-medium">{result.label}</span>
-                            {result.type === 'category' && (
-                              <span className="ml-2 inline-block rounded-full bg-primary/20 px-2 py-0.5 text-xs text-primary">
-                                Category
-                              </span>
-                            )}
-                          </div>
-                          {result.type === 'link' && (
-                            <span className="text-xs text-muted-foreground">Link</span>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="font-medium">{result.label}</span>
+                          {result.type === 'category' && (
+                            <span className="ml-2 inline-block rounded-full bg-primary/20 px-2 py-0.5 text-xs text-primary">
+                              Category
+                            </span>
                           )}
                         </div>
-                      </button>
-                    </motion.li>
-                  ))}
-                </ul>
-                <div className="border-t border-border/30 px-4 py-2 text-xs text-muted-foreground">
-                  <span>↑↓ to navigate • ⏎ to select • ESC to close</span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                        {result.type === 'link' && (
+                          <span className="text-xs text-muted-foreground">Link</span>
+                        )}
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <div className="border-t border-border/30 px-4 py-2 text-xs text-muted-foreground">
+                <span>↑↓ to navigate • ⏎ to select • ESC to close</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

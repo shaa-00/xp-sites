@@ -193,10 +193,40 @@ html {
   }
 }
 
-/* Optimize images for lazy loading - use HTML loading="lazy" attribute instead */
-img {
+/* Skip layout/paint for off-screen category sections to cut initial render
+   cost. contain-intrinsic-size reserves an estimated height so scroll
+   position stays stable as a section scrolls into view (no scrollbar jump /
+   CLS). NOTE: when images are added, give them loading="lazy" + explicit
+   width/height rather than a global rule. */
+.xp-category {
   content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
 }
+
+/* CSS replacements for the framer-motion search/dropdown/modal animations.
+   These replicate the previous opacity/translate fade-ins without shipping
+   the framer-motion runtime to the client. */
+@keyframes xp-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes xp-modal-in {
+  from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes xp-dropdown-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes xp-item-in {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.xp-fade-in   { animation: xp-fade-in 0.2s ease-out both; }
+.xp-modal-in  { animation: xp-modal-in 0.2s ease-out both; }
+.xp-dropdown-in { animation: xp-dropdown-in 0.2s ease-out both; }
+.xp-item-in   { animation: xp-item-in 0.2s ease-out both; }
 
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {

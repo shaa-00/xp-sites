@@ -175,7 +175,7 @@ export function CategorySection({ category, links }: CategorySectionProps) {
   const Icon = colors.icon
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 xp-category">
       <div className="flex items-center gap-2">
         <Icon className={`h-5 w-5 ${colors.text}`} />
         <h2 className={`text-xl font-semibold ${colors.text}`}>{category}</h2>

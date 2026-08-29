@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react'
 import { Search, Bookmark } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
 import ExportLinkGrid from '@/components/export-link-grid'
 import { type LinkItem } from '@/components/category-section'
 import { getDisplayCategories } from '@/lib/category-order'
@@ -170,36 +169,30 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
         )}
       </main>
 
-      <AnimatePresence>
-        {showFloatingSearch && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 backdrop-blur-md flex items-start justify-center pt-24 px-4"
-            onClick={() => setShowFloatingSearch(false)}
+      {/* Floating search modal — CSS enter animations replace framer-motion.
+          Exit is instant (no AnimatePresence); the blur/fade-in on open is
+          preserved. */}
+      {showFloatingSearch && (
+        <div
+          className="xp-fade-in fixed inset-0 z-50 backdrop-blur-md flex items-start justify-center pt-24 px-4"
+          onClick={() => setShowFloatingSearch(false)}
+        >
+          <div
+            className="xp-modal-in w-full max-w-2xl"
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
           >
-            <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="w-full max-w-2xl"
-              onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            >
-              <SearchBar
-                bookmarks={bookmarks}
-                categorized={categorized}
-                onFilter={(type, value) => {
-                  handleFilter(type, value)
-                  setShowFloatingSearch(false)
-                }}
-                onClose={() => setShowFloatingSearch(false)}
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <SearchBar
+              bookmarks={bookmarks}
+              categorized={categorized}
+              onFilter={(type, value) => {
+                handleFilter(type, value)
+                setShowFloatingSearch(false)
+              }}
+              onClose={() => setShowFloatingSearch(false)}
+            />
+          </div>
+        </div>
+      )}
     </>
   )
 }
