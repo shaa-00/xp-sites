@@ -3,7 +3,6 @@
 import { memo, useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { Search, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useIsClient } from '@/hooks/use-is-client'
 
 interface BookmarkData {
   title: string
@@ -30,7 +29,6 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
   const [query, setQuery] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
-  const isClient = useIsClient()
   const containerRef = useRef<HTMLDivElement>(null)
 
   const categories = useMemo(() => Object.keys(categorized), [categorized])
@@ -126,7 +124,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
       <div className="mx-auto max-w-4xl">
         <div className="relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-            {isClient && <Search className="h-4 w-4" />}
+            <Search className="h-4 w-4" />
           </div>
           <input
             type="text"
@@ -148,7 +146,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose }: SearchBarProps
               }}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
             >
-              {isClient && <X className="h-4 w-4" />}
+              <X className="h-4 w-4" />
             </button>
           )}
 
