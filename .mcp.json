@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "graft": {
+      "command": "npx",
+      "args": ["-y", "@nanonets/graft", "mcp"]
+    },
+    "doop": {
+      "type": "http",
+      "url": "https://doop.design/mcp"
+    }
+  }
+}

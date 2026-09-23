@@ -1,9 +1,16 @@
-// Offline pipeline: Firefox bookmarks + GitHub stars -> categorized static JSON.
-// Run locally only (needs GEMINI_API_KEY / GITHUB_TOKEN from .env.local). Never deployed.
+// Local pipeline: Firefox bookmarks + GitHub stars -> categorized Turso rows.
+// Run locally only (needs GEMINI_API_KEY / GITHUB_TOKEN / Turso credentials).
 //   node scripts/categorize.mjs [path/to/bookmarks.json]
-import { readFile, writeFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { dirname, resolve } from 'node:path'
+import {
+  closeDatabase,
+  createDatabaseClient,
+  ensureDatabase,
+  getItems,
+  insertItem,
+} from './db.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
@@ -29,8 +36,6 @@ export const CATEGORIES = [
   'Utilities & Scripts',
   'Self-Hosted & Architecture',
 ]
-
-export const FALLBACK_CATEGORY = 'Free Resources & Open Source Lists'
 
 const CATEGORY_SET = new Set(CATEGORIES)
 
@@ -79,88 +84,39 @@ export function mapStarredRepos(repos) {
   }))
 }
 
-// Guard against category drift: any name not in the fixed list -> fallback.
 export function normalizeCategory(name) {
-  return CATEGORY_SET.has(name) ? name : FALLBACK_CATEGORY
+  if (!CATEGORY_SET.has(name)) {
+    throw new Error(`Invalid category returned by Gemini: ${JSON.stringify(name)}`)
+  }
+  return name
 }
 
-// Combine links + starred, batch by `batchSize`, ask callGemini for one category
-// per item, normalize every result. Returns Record<category, items[]> (no empties).
+// Combine links + starred, batch by `batchSize`, and require one valid category
+// per item. Invalid or incomplete model output aborts the run before writes.
 export async function assignCategories(links, starred, { batchSize = 40, callGemini }) {
   const items = [
     ...links.map((it) => ({ kind: 'link', ...it })),
     ...starred.map((it) => ({ kind: 'star', ...it })),
   ]
   const out = {}
-  let driftCount = 0
   for (let i = 0; i < items.length; i += batchSize) {
     const batch = items.slice(i, i + batchSize)
     const cats = await callGemini(batch)
+    if (!Array.isArray(cats) || cats.length !== batch.length) {
+      throw new Error(`Gemini returned ${cats?.length ?? 0} categories for ${batch.length} items`)
+    }
     for (let j = 0; j < batch.length; j++) {
-      const rawCat = cats[j]
-      const cat = normalizeCategory(rawCat)
-      if (cat === FALLBACK_CATEGORY && rawCat !== FALLBACK_CATEGORY) {
-        driftCount++
-      }
-      ;(out[cat] ||= []).push(batch[j])
+      const cat = normalizeCategory(cats[j])
+        ; (out[cat] ||= []).push(batch[j])
     }
   }
-  if (driftCount > 0) {
-    console.warn(`[categorize] ${driftCount} item(s) rerouted to fallback category (Gemini drift detected)`)
-  }
-  out.driftCount = driftCount
   return out
 }
 
 
-export function mergeRecords(...records) {
-  const merged = {}
-  for (const rec of records) {
-    for (const [cat, items] of Object.entries(rec)) {
-      if (items.length === 0) continue
-      ;(merged[cat] ||= []).push(...items)
-    }
-  }
-  return merged
-}
-
-// Flatten a Record<category, items[]> into a url -> item map, so we can tell
-// which URLs we've already classified (cached in the committed JSON).
-export function flattenRecord(record) {
-  const flat = new Map()
-  for (const items of Object.values(record)) {
-    for (const it of items) flat.set(it.url, it)
-  }
-  return flat
-}
-
-// Keep only cached items whose URL is still present in the new input. Items
-// whose URL was removed from the bookmarks/GitHub set drop out automatically.
-export function knownByCategory(record, presentUrls) {
-  const known = {}
-  for (const [cat, items] of Object.entries(record)) {
-    const kept = items.filter((it) => presentUrls.has(it.url))
-    if (kept.length) known[cat] = kept
-  }
-  return known
-}
-
-async function loadJson(path) {
-  try {
-    return JSON.parse(await readFile(path, 'utf8'))
-  } catch {
-    return {}
-  }
-}
-
-export async function writeOutputs(dir, links, starred) {
-  await writeFile(resolve(dir, 'links.json'), JSON.stringify(links, null, 2))
-  await writeFile(resolve(dir, 'starred.json'), JSON.stringify(starred, null, 2))
-}
-
 // --- local-only IO used only by the CLI entrypoint ---
 
-async function loadEnvLocal() {
+export async function loadEnvLocal() {
   const envPath = resolve(ROOT, '.env.local')
   try {
     const text = (await readFile(envPath, 'utf8')).toString()
@@ -182,10 +138,11 @@ async function fetchGitHubStars(username) {
   const token = process.env.GITHUB_TOKEN
   const headers = { 'User-Agent': 'xp-sites-categorize', Accept: 'application/vnd.github+json' }
   if (token) headers.Authorization = `Bearer ${token}`
+  const encodedUsername = encodeURIComponent(username.trim())
   const stars = []
   for (let page = 1; page <= 10; page++) {
     const res = await fetch(
-      `https://api.github.com/users/${username}/starred?per_page=100&page=${page}&sort=created&direction=desc`,
+      `https://api.github.com/users/${encodedUsername}/starred?per_page=100&page=${page}&sort=created&direction=desc`,
       { headers },
     )
     if (!res.ok) throw new Error(`GitHub API ${res.status}`)
@@ -197,37 +154,51 @@ async function fetchGitHubStars(username) {
   return stars
 }
 
-function makeGeminiCaller() {
+export function makeGeminiCaller() {
   const key = process.env.GEMINI_API_KEY
-  const model = 'gemini-3.5-flash'
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`
+  if (!key) throw new Error('Missing required environment variable: GEMINI_API_KEY')
+  const model = 'gemini-3.5-flash-lite'
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`
   const list = CATEGORIES.map((c) => `- ${c}`).join('\n')
 
   return async function callGemini(batch) {
     const itemsText = batch
       .map((it, i) => `${i + 1}. ${it.title || it.name || ''} — ${it.url}`)
       .join('\n')
-    const prompt = `Categorize each item into EXACTLY ONE category, copied verbatim from this fixed list:\n${list}\n\nReturn a JSON array of category strings, one per item, in the same order as the items. No markdown, no commentary.\n\nItems:\n${itemsText}`
+    const prompt = `Categorize each item into EXACTLY ONE category, copied character-for-character from this fixed list:\n${list}\n\nReturn ONLY a JSON array of exactly ${batch.length} strings, in the same order as the items. Every string must match the fixed list. Do not return markdown, explanations, null, or an empty array.\n\nItems:\n${itemsText}`
+    let lastError
 
-    try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: 'application/json' },
-        }),
-      })
-      if (!res.ok) throw new Error(`Gemini ${res.status}`)
-      const data = await res.json()
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '[]'
-      const raw = JSON.parse(text.replace(/^```(?:json)?|```$/gim, '').trim())
-      const cats = Array.isArray(raw) ? raw : []
-      return batch.map((_, i) => cats[i] ?? FALLBACK_CATEGORY)
-    } catch (err) {
-      console.warn(`[categorize] Gemini batch failed (${err.message}); using fallback for ${batch.length} items`)
-      return batch.map(() => FALLBACK_CATEGORY)
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': key,
+          },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0, responseMimeType: 'application/json' },
+          }),
+        })
+        if (!res.ok) throw new Error(`Gemini ${res.status}`)
+        const data = await res.json()
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
+        const cats = JSON.parse(text?.replace(/^```(?:json)?|```$/gim, '').trim() || 'null')
+        if (!Array.isArray(cats) || cats.length !== batch.length) {
+          throw new Error(`expected ${batch.length} categories, received ${Array.isArray(cats) ? cats.length : 'non-array output'}`)
+        }
+        cats.forEach(normalizeCategory)
+        return cats
+      } catch (err) {
+        lastError = err
+        if (attempt < 3) {
+          await new Promise((resolve) => setTimeout(resolve, attempt * 1000))
+        }
+      }
     }
+
+    throw new Error(`Gemini could not categorize batch after 3 attempts: ${lastError.message}`)
   }
 }
 
@@ -238,7 +209,7 @@ export function splitByKind(categorized) {
     for (const it of items) {
       const { kind, ...rest } = it
       const target = kind === 'star' ? starred : links
-      ;(target[cat] ||= []).push(rest)
+        ; (target[cat] ||= []).push(rest)
     }
   }
   return { links, starred }
@@ -246,7 +217,7 @@ export function splitByKind(categorized) {
 
 async function main() {
   await loadEnvLocal()
-  const pubDir = resolve(ROOT, 'public')
+  const client = createDatabaseClient()
   const bookmarkArg = process.argv[2]
 
   let links = []
@@ -255,7 +226,7 @@ async function main() {
     links = filterNoise(parseFirefoxBookmarks(raw))
     console.log(`[categorize] parsed ${links.length} bookmarks (after noise filter)`)
   } else {
-    console.log('[categorize] no bookmarks file given; links.json will be empty')
+    console.log('[categorize] no bookmarks file given; bookmark input is empty')
   }
 
   let starred = []
@@ -264,19 +235,20 @@ async function main() {
     starred = mapStarredRepos(repos)
     console.log(`[categorize] fetched ${starred.length} GitHub stars`)
   } catch (err) {
-    console.warn(`[categorize] GitHub fetch failed: ${err.message}; starred.json will be empty`)
+    console.warn(`[categorize] GitHub fetch failed: ${err.message}; GitHub input is empty`)
   }
 
-  // Cache: reuse categories already committed in public/*.json so we never
-  // re-send a known URL to Gemini (saves cost + prevents drift). Only brand-new
-  // URLs are classified; previously-categorized items are always preserved.
-  const cachedLinks = await loadJson(resolve(pubDir, 'links.json'))
-  const cachedStarred = await loadJson(resolve(pubDir, 'starred.json'))
-  const knownLinks = flattenRecord(cachedLinks)
-  const knownStars = flattenRecord(cachedStarred)
+  await ensureDatabase(client)
+  const cachedItems = await getItems(client)
+  const cachedByUrl = new Map(cachedItems.map((item) => [item.url, item]))
 
-  const newLinks = links.filter((l) => !knownLinks.has(l.url))
-  const newStars = starred.filter((s) => !knownStars.has(s.url))
+  // Bookmark records win URL collisions. A GitHub row can be replaced only
+  // when the same URL appears in the current bookmark input.
+  const newLinks = links.filter((link) => {
+    const cached = cachedByUrl.get(link.url)
+    return !cached || cached.source === 'github'
+  })
+  const newStars = starred.filter((star) => !cachedByUrl.has(star.url))
 
   if (newLinks.length || newStars.length) {
     console.log(`[categorize] ${newLinks.length} new bookmark(s), ${newStars.length} new star(s) to classify`)
@@ -284,24 +256,28 @@ async function main() {
       batchSize: 40,
       callGemini: makeGeminiCaller(),
     })
-    // Strip the metadata key before splitting into links/starred records,
-    // so splitByKind doesn't trip on the non-object driftCount property.
-    const { driftCount: _drift, ...catOnly } = categorized
-    const { links: newLinkRec, starred: newStarRec } = splitByKind(catOnly)
-    // Merge fresh classifications with the entire committed cache (cached
-    // items are never re-classified or dropped — only genuinely new URLs hit
-    // Gemini).
-    const linksRec = mergeRecords(cachedLinks, newLinkRec)
-    const starredRec = mergeRecords(cachedStarred, newStarRec)
-    await writeOutputs(pubDir, linksRec, starredRec)
-    const totalLinks = Object.values(linksRec).reduce((n, a) => n + a.length, 0)
-    const totalStars = Object.values(starredRec).reduce((n, a) => n + a.length, 0)
-    console.log(
-      `[categorize] wrote public/links.json (${totalLinks} items, ${Object.keys(linksRec).length} categories) and public/starred.json (${totalStars} items, ${Object.keys(starredRec).length} categories)`,
-    )
+    const { links: newLinkRec, starred: newStarRec } = splitByKind(categorized)
+    for (const [category, records] of Object.entries(newLinkRec)) {
+      for (const record of records) {
+        await insertItem(client, { ...record, category, source: 'bookmark' }, { overwrite: true })
+      }
+    }
+    for (const [category, records] of Object.entries(newStarRec)) {
+      for (const record of records) {
+        await insertItem(client, {
+          ...record,
+          title: record.name,
+          category,
+          source: 'github',
+        })
+      }
+    }
+    console.log(`[categorize] inserted ${newLinks.length + newStars.length} newly classified item(s)`)
   } else {
-    console.log('[categorize] nothing new to classify; public/*.json unchanged')
+    console.log('[categorize] nothing new to classify; database unchanged')
   }
+
+  closeDatabase(client)
 }
 
 // Run only when invoked directly, not when imported by tests.

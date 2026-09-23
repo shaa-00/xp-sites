@@ -20,6 +20,7 @@ import {
   Server,
   Pin as Tag,
 } from 'iconoir-react'
+import { isSafeHttpUrl } from '@/lib/utils'
 
 // Every iconoir-react icon shares one component type; use it as the lookup type.
 type IconoirIcon = typeof ExternalLink
@@ -169,6 +170,10 @@ function hostOf(url: string): string {
   }
 }
 
+export function categorySlug(category: string): string {
+  return category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+}
+
 // Pure server-renderable section. No 'use client', no hooks, no animation
 // runtime — the markup ships in the initial HTML so cards are visible
 // immediately (LCP) instead of being built by JS after hydration.
@@ -177,7 +182,7 @@ export function CategorySection({ category, links }: CategorySectionProps) {
   const Icon = colors.icon
 
   return (
-    <section className="space-y-4 xp-category">
+    <section id={categorySlug(category)} className="scroll-mt-28 space-y-4 xp-category">
       <div className="flex items-center gap-2">
         <Icon className={`h-5 w-5 ${colors.text}`} />
         <h2 className={`text-xl font-semibold ${colors.text}`}>{category}</h2>
@@ -185,7 +190,7 @@ export function CategorySection({ category, links }: CategorySectionProps) {
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {links.map((link) => (
+        {links.filter((link) => isSafeHttpUrl(link.url)).map((link) => (
           // eslint-disable-next-line react/jsx-no-target-blank
           <a
             key={link.url}

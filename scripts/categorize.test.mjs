@@ -2,16 +2,11 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
   CATEGORIES,
-  FALLBACK_CATEGORY,
   parseFirefoxBookmarks,
   filterNoise,
   mapStarredRepos,
   assignCategories,
   normalizeCategory,
-  mergeRecords,
-  writeOutputs,
-  flattenRecord,
-  knownByCategory,
   splitByKind,
 } from './categorize.mjs'
 
@@ -51,8 +46,8 @@ test('CATEGORIES is the fixed 18-item closed list including new categories', () 
   assert.ok(CATEGORIES.includes('Self-Hosted & Architecture'))
 })
 
-test('FALLBACK_CATEGORY is a real category in the fixed list', () => {
-  assert.ok(CATEGORIES.includes(FALLBACK_CATEGORY))
+test('the fixed category list has no implicit fallback category', () => {
+  assert.equal(CATEGORIES.length, 18)
 })
 
 test('parseFirefoxBookmarks extracts every place, recursing folders', () => {
@@ -110,9 +105,9 @@ test('normalizeCategory passes through a known category verbatim', () => {
   assert.equal(normalizeCategory('AI Tools & Agents'), 'AI Tools & Agents')
 })
 
-test('normalizeCategory reroutes unknown/drifting category to fallback', () => {
-  assert.equal(normalizeCategory('Some New Thing'), FALLBACK_CATEGORY)
-  assert.equal(normalizeCategory(''), FALLBACK_CATEGORY)
+test('normalizeCategory rejects unknown/drifting categories', () => {
+  assert.throws(() => normalizeCategory('Some New Thing'), /Invalid category/)
+  assert.throws(() => normalizeCategory(''), /Invalid category/)
 })
 
 test('assignCategories offline assigns one real category to each item, batch size respected', async () => {
@@ -140,56 +135,40 @@ test('assignCategories offline assigns one real category to each item, batch siz
   }
 })
 
-test('assignCategories returns a driftCount and warns when Gemini drifts', async () => {
+test('assignCategories rejects model drift instead of using a fallback', async () => {
   const links = [
     { title: 'Real', url: 'https://real.com' },
     { title: 'Drifty', url: 'https://drift.com' },
   ]
-  let warned = ''
-  const origWarn = console.warn
-  console.warn = (m) => { warned += m }
-  try {
-    // One valid category, one invented (drifting) category.
-    const out = await assignCategories(links, [], {
+  await assert.rejects(
+    assignCategories(links, [], {
       batchSize: 10,
       callGemini: async () => ['AI Tools & Agents', 'Brand New Category 999'],
-    })
-    assert.ok(CATEGORIES.includes('AI Tools & Agents'))
-    assert.equal(out['AI Tools & Agents'].length, 1)
-    assert.equal(out[FALLBACK_CATEGORY].length, 1)
-    assert.equal(out.driftCount, 1)
-    assert.match(warned, /rerouted.*fallback.*drift/i)
-  } finally {
-    console.warn = origWarn
-  }
+    }),
+    /Invalid category/,
+  )
 })
 
-test('assignCategories driftCount is 0 and warns nothing when all categories are valid', async () => {
+test('assignCategories accepts valid categories without fallback metadata', async () => {
   const links = [{ title: 'x', url: 'https://example.com/x' }]
-  let warned = ''
-  const origWarn = console.warn
-  console.warn = (m) => { warned += m }
-  try {
-    const out = await assignCategories(links, [], {
-      batchSize: 10,
-      callGemini: async () => ['Developer Tools & Productivity'],
-    })
-    assert.equal(out.driftCount, 0)
-    assert.equal(warned, '')
-  } finally {
-    console.warn = origWarn
-  }
-})
-
-
-test('assignCategories never produces a category outside the fixed list', async () => {
-  const links = [{ title: 'x', url: 'https://example.com/x' }]
-  // Malicious/model-drift categorizer returning an invented name.
   const out = await assignCategories(links, [], {
     batchSize: 10,
-    callGemini: async () => ['Brand New Category 999'],
+    callGemini: async () => ['Developer Tools & Productivity'],
   })
-  assert.ok(Object.keys(out).filter(k => k !== 'driftCount').every(k => CATEGORIES.includes(k)))
+  assert.deepEqual(out['Developer Tools & Productivity'], links.map((item) => ({ kind: 'link', ...item })))
+})
+
+
+test('assignCategories rejects a category outside the fixed list', async () => {
+  const links = [{ title: 'x', url: 'https://example.com/x' }]
+  // Malicious/model-drift categorizer returning an invented name.
+  await assert.rejects(
+    assignCategories(links, [], {
+      batchSize: 10,
+      callGemini: async () => ['Brand New Category 999'],
+    }),
+    /Invalid category/,
+  )
 })
 
 test('assignCategories batches large inputs by 40', async () => {
@@ -206,76 +185,3 @@ test('assignCategories batches large inputs by 40', async () => {
   assert.equal(calls, 3) // 40 + 40 + 5
 })
 
-test('mergeRecords drops empty categories, keeps non-empty ones', () => {
-  const merged = mergeRecords(
-    { A: [{ title: 'a', url: 'u' }] },
-    { B: [] },
-    { 'Free Resources & Open Source Lists': [{ title: 'c', url: 'v' }] },
-  )
-  assert.ok('A' in merged)
-  assert.ok(!('B' in merged))
-  assert.equal(merged['Free Resources & Open Source Lists'][0].url, 'v')
-})
-
-test('writeOutputs writes two JSON files shaped as Record<string, Item[]>', async () => {
-  const fs = await import('node:fs/promises')
-  const os = await import('node:os')
-  const path = await import('node:path')
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cat-test-'))
-  const data = { 'AI Tools & Agents': [{ title: 'x', url: 'https://x.com' }] }
-  await writeOutputs(dir, data, data)
-  const links = JSON.parse(await fs.readFile(path.join(dir, 'links.json'), 'utf8'))
-  const starred = JSON.parse(await fs.readFile(path.join(dir, 'starred.json'), 'utf8'))
-  assert.deepEqual(links, data)
-  assert.deepEqual(starred, data)
-  await fs.rm(dir, { recursive: true, force: true })
-})
-
-// --- caching: never re-categorize a URL we already classified ---
-
-test('flattenRecord maps every url to its item', () => {
-  const rec = {
-    'AI Tools & Agents': [{ title: 'x', url: 'https://x.com' }],
-    'Anime & Art': [{ title: 'y', url: 'https://y.com' }],
-  }
-  const flat = flattenRecord(rec)
-  assert.equal(flat.get('https://x.com').title, 'x')
-  assert.equal(flat.get('https://y.com').title, 'y')
-  assert.equal(flat.size, 2)
-})
-
-test('knownByCategory keeps only present urls, drops removed ones', () => {
-  const cached = { 'AI Tools & Agents': [{ title: 'Old', url: 'https://old.com' }] }
-  // old.com is gone from the new bookmarks; nothing present -> empty record.
-  assert.deepEqual(knownByCategory(cached, new Set(['https://react.dev'])), {})
-  // If it were present, it survives under its original category.
-  assert.deepEqual(knownByCategory(cached, new Set(['https://old.com'])), cached)
-})
-
-test('only new URLs are sent to Gemini; cached URLs keep their category', async () => {
-  const cached = { 'Developer Tools & Productivity': [{ title: 'React', url: 'https://react.dev' }] }
-  const links = [
-    { title: 'React', url: 'https://react.dev' }, // cached -> NOT resent
-    { title: 'Next', url: 'https://nextjs.org' }, // new -> sent
-  ]
-  const flat = flattenRecord(cached)
-  const unknown = links.filter((l) => !flat.has(l.url))
-  assert.deepEqual(unknown, [{ title: 'Next', url: 'https://nextjs.org' }])
-
-  let batches = 0
-  const newCat = await assignCategories(unknown, [], {
-    batchSize: 40,
-    callGemini: async (items) => {
-      batches += 1
-      return items.map(() => 'AI Tools & Agents')
-    },
-  })
-  assert.equal(batches, 1) // only the new URL, not the cached one
-
-  const { driftCount: _ignore, ...catOnly } = newCat
-  assert.equal(_ignore, 0)
-  const known = knownByCategory(cached, new Set(links.map((l) => l.url)))
-  const finalLinks = mergeRecords(known, splitByKind(catOnly).links)
-  assert.equal(finalLinks['Developer Tools & Productivity'][0].url, 'https://react.dev')
-  assert.equal(finalLinks['AI Tools & Agents'][0].url, 'https://nextjs.org')
-})

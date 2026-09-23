@@ -23,6 +23,13 @@ export const metadata: Metadata = {
   title: 'XP-Farm | Curated Developer & AI Links',
   description: 'A minimalist collection of curated developer tools, AI agents, MCP resources, and open-source bookmarks.',
   metadataBase: new URL('https://xp-sites.vercel.app'),
+  alternates: {
+    canonical: '/',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'XP-Farm | Curated Developer & AI Links',
     description: 'A minimalist collection of curated developer tools, AI agents, MCP resources, and open-source bookmarks.',
@@ -30,12 +37,22 @@ export const metadata: Metadata = {
     siteName: 'XP-Farm',
     locale: 'en_US',
     type: 'website',
+    images: [{
+      url: '/opengraph-image',
+      width: 1200,
+      height: 630,
+      alt: 'XP-Farm curated developer and AI links',
+    }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'XP-Farm | Curated Developer & AI Links',
     description: 'A minimalist collection of curated developer tools, AI agents, MCP resources, and open-source bookmarks.',
+    images: ['/opengraph-image'],
   },
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
 }
 
 export const viewport: Viewport = {
@@ -58,7 +75,6 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
         >
           {children}
           <Analytics />

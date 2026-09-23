@@ -1,11 +1,11 @@
 'use client'
 
-import { HalfMoon as Moon, SunLight as Sun } from 'iconoir-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { Classic } from './Classic'
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -17,12 +17,10 @@ export function ThemeToggle() {
   }
 
   return (
-    <button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
-      aria-label="Toggle theme"
-    >
-      {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-    </button>
+    <Classic
+      toggled={resolvedTheme === 'dark'}
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+      className="rounded-xl bg-primary/10 p-2 text-primary transition-colors hover:bg-primary/20"
+    />
   )
 }

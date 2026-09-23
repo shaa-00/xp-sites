@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Search, Bookmark } from 'iconoir-react'
+import { Search } from 'iconoir-react'
 import ExportLinkGrid from '@/components/export-link-grid'
 import { type LinkItem } from '@/components/category-section'
 import { getDisplayCategories } from '@/lib/category-order'
 import SearchBar from '@/components/search-bar'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { CategoryRail } from '@/components/category-rail'
 
 interface LinkExplorerProps {
   categorized: Record<string, LinkItem[]>
@@ -79,24 +80,18 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
   return (
     <>
       <header className="sticky top-0 z-30 px-4 pt-3 sm:px-6">
-        <div className={`mx-auto relative flex items-center justify-between gap-3 rounded-2xl border border-border/60 px-2.5 py-2 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_8px_28px_rgba(0,0,0,0.10)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/50 transition-[max-width,background-color] duration-300 ease-out motion-reduce:transition-none ${scrolled ? 'max-w-3xl bg-background/80' : 'max-w-4xl bg-background/70'}`}>
+        <div className={`mx-auto relative flex items-center justify-between gap-2 rounded-2xl border border-border/60 px-2.5 py-2 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_8px_28px_rgba(0,0,0,0.10)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/50 transition-[max-width,background-color] duration-300 ease-out motion-reduce:transition-none ${scrolled ? 'max-w-3xl bg-background/80' : 'max-w-4xl bg-background/70'}`}>
           <a
             href="/"
-            className="flex items-center rounded-xl px-1.5 py-0.5 outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary/30"
-            aria-label="xp-sites home"
+            className="flex shrink-0 items-center rounded-xl px-1.5 py-0.5 outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary/30"
+            aria-label="XP-Farm home"
           >
-            <img
-              src="/xp-icon.png"
-              alt="xp-sites"
-              width={28}
-              height={28}
-              className="h-7 w-7 rounded-md dark:invert"
-            />
+            <span aria-hidden="true" className="grid h-7 w-7 place-items-center rounded-md bg-primary text-xs font-bold text-primary-foreground">XP</span>
           </a>
 
-          <span className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-base font-semibold tracking-tight text-foreground">
-            xp-sites
-          </span>
+          <h1 className="min-w-0 flex-1 truncate text-center text-sm font-semibold tracking-tight text-foreground sm:text-base">
+            XP-Farm
+          </h1>
 
           <div className="flex items-center gap-1.5">
             <button
@@ -108,24 +103,33 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
               <span className="hidden text-xs font-medium sm:inline">Search</span>
             </button>
             <ThemeToggle />
-            <span className="hidden items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground sm:flex">
-              <Bookmark className="h-3 w-3" />
+            <span className="hidden shrink-0 items-center justify-center rounded-full border border-border/60 bg-muted/40 px-2 py-1 text-center text-[11px] font-medium text-muted-foreground sm:flex">
               {totalLinks} links
             </span>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 mt-12 pb-12 sm:px-6 lg:px-8">
+      <main className="mx-auto mt-8 max-w-4xl px-4 pb-12 sm:mt-12 sm:px-6 lg:px-8">
+        <CategoryRail
+          categories={getDisplayCategories(categorized)}
+          categorized={categorized}
+          activeCategory={filteredCategory}
+          onSelect={(category) => {
+            setFilteredCategory(category)
+            setFilteredLink(null)
+          }}
+        />
+
         {(filteredCategory || filteredLink) && (
-          <div className="mb-8 flex items-center justify-between rounded-lg border border-border/50 bg-primary/5 p-4">
-            <div>
-              <p className="text-sm font-medium text-foreground">
+          <div className="mb-10 flex items-center justify-between gap-4 border-b border-border/60 py-4">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-foreground">
                 {filteredCategory
-                  ? `Viewing: ${filteredCategory}`
+                  ? filteredCategory
                   : 'Search results'}
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-0.5 text-xs text-muted-foreground">
                 {filteredCategory
                   ? `${displayed[filteredCategory]?.length || 0} items`
                   : 'Click result to view'}
@@ -133,7 +137,7 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
             </div>
             <button
               onClick={clearFilter}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="shrink-0 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
             >
               Clear filter
             </button>

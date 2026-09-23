@@ -1962,6 +1962,311 @@
         "morphe",
         "morphe-patches"
       ]
+    },
+    {
+      "name": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "description": "An agentic skills framework & software development methodology that works.",
+      "stars": 290391,
+      "language": "Shell",
+      "topics": [
+        "ai",
+        "brainstorming",
+        "coding",
+        "obra",
+        "sdlc",
+        "skills",
+        "subagent-driven-development",
+        "superpowers"
+      ]
+    },
+    {
+      "name": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "description": "The design language that makes your AI harness better at design.",
+      "stars": 70026,
+      "language": "JavaScript",
+      "topics": []
+    },
+    {
+      "name": "headroomlabs-ai/headroom",
+      "url": "https://github.com/headroomlabs-ai/headroom",
+      "description": "Compress tool outputs, logs, files, and RAG chunks before they reach the LLM. 20% fewer tokens for coding agents, 60-95% fewer tokens for JSON, same answers. Library, proxy, MCP server.",
+      "stars": 73577,
+      "language": "Python",
+      "topics": [
+        "agent",
+        "ai",
+        "anthropic",
+        "claude-code",
+        "compression",
+        "context-engineering",
+        "context-window",
+        "cursor",
+        "fastapi",
+        "langchain",
+        "llm",
+        "mcp",
+        "openai",
+        "prompt-engineering",
+        "proxy",
+        "python",
+        "rag",
+        "token-optimization",
+        "tokens",
+        "typescript"
+      ]
+    },
+    {
+      "name": "GMartin-Data/notebooklm-prompts",
+      "url": "https://github.com/GMartin-Data/notebooklm-prompts",
+      "description": "A collection of NotebookLM prompt templates",
+      "stars": 176,
+      "language": "JavaScript",
+      "topics": []
+    },
+    {
+      "name": "mnfst/awesome-free-llm-apis",
+      "url": "https://github.com/mnfst/awesome-free-llm-apis",
+      "description": "List of Permanent Free LLM API  (API Keys)",
+      "stars": 8153,
+      "language": "JavaScript",
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "awesome",
+        "awesome-list",
+        "gemini",
+        "llm",
+        "llm-router",
+        "llm-routing",
+        "ollama",
+        "openai",
+        "openclaw",
+        "openclaw-plugin",
+        "router"
+      ]
+    },
+    {
+      "name": "open-free-llm-api/awesome-freellm-apis",
+      "url": "https://github.com/open-free-llm-api/awesome-freellm-apis",
+      "description": "134+ free LLM APIs & AI API keys from 40+ providers. Google Gemini, NVIDIA NIM, Groq, OpenRouter & more. One-click setup for Claude Code, Cursor and Codex.",
+      "stars": 3227,
+      "language": null,
+      "topics": [
+        "free-llm-api",
+        "free-llm-models",
+        "free-llm-resources",
+        "free-models",
+        "freellm",
+        "freellmapi"
+      ]
+    },
+    {
+      "name": "collidingScopes/liquid-logo",
+      "url": "https://github.com/collidingScopes/liquid-logo",
+      "description": "A free, open-source tool for creating animated logos with a liquid metal aesthetic. Create logo animations in real-time in the browser.",
+      "stars": 206,
+      "language": "TypeScript",
+      "topics": [
+        "aesthetic",
+        "animated-logo",
+        "animation",
+        "art",
+        "canvas",
+        "free",
+        "generative-art",
+        "generator",
+        "glsl",
+        "graphics",
+        "javascript",
+        "liquid",
+        "liquid-metal",
+        "logo",
+        "logo-animation",
+        "open-source",
+        "particle",
+        "real-time",
+        "shader",
+        "webgl"
+      ]
+    },
+    {
+      "name": "ruucm/shadergradient",
+      "url": "https://github.com/ruucm/shadergradient",
+      "description": "Create beautiful moving gradients on Framer, Figma and React",
+      "stars": 2528,
+      "language": "TypeScript",
+      "topics": [
+        "figma-plugin",
+        "framer",
+        "glsl-shaders",
+        "gradient",
+        "reactjs",
+        "threejs"
+      ]
+    },
+    {
+      "name": "dashersw/liquid-glass-js",
+      "url": "https://github.com/dashersw/liquid-glass-js",
+      "description": "Liquid Glass UI - Apple-Inspired Glass Effects Library",
+      "stars": 1112,
+      "language": "JavaScript",
+      "topics": []
+    },
+    {
+      "name": "pmndrs/react-three-fiber",
+      "url": "https://github.com/pmndrs/react-three-fiber",
+      "description": "🇨🇭 A React renderer for Three.js",
+      "stars": 32429,
+      "language": "TypeScript",
+      "topics": [
+        "3d",
+        "animation",
+        "fiber",
+        "react",
+        "renderer",
+        "threejs"
+      ]
+    },
+    {
+      "name": "rison114514/dsh-endfield-ui",
+      "url": "https://github.com/rison114514/dsh-endfield-ui",
+      "description": "Endfield-inspired industrial UI shell for DeepSeek Harness (dsh) — non-official fan theme. Install: dsh plugin --profile web add @rison/dsh-endfield-ui",
+      "stars": 70,
+      "language": "JavaScript",
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "theme",
+        "web-ui"
+      ]
+    },
+    {
+      "name": "getagentseal/codeburn",
+      "url": "https://github.com/getagentseal/codeburn",
+      "description": "Free, local tool to track AI coding token usage and cost across 37 tools and agents (Claude Code, Cursor, Codex, Gemini and more), by model, project, and task. npx codeburn",
+      "stars": 11179,
+      "language": "TypeScript",
+      "topics": [
+        "ai-coding",
+        "claude-code",
+        "cli",
+        "codex",
+        "cost-tracking",
+        "cursor-ide",
+        "developer-tools",
+        "menubar",
+        "observability",
+        "terminal-ui",
+        "token-usage",
+        "web-dashboard"
+      ]
+    },
+    {
+      "name": "NVIDIA/OpenShell",
+      "url": "https://github.com/NVIDIA/OpenShell",
+      "description": "OpenShell is the safe, private runtime for autonomous AI agents.",
+      "stars": 8759,
+      "language": "Rust",
+      "topics": []
+    },
+    {
+      "name": "NVIDIA/SkillEvaluator",
+      "url": "https://github.com/NVIDIA/SkillEvaluator",
+      "description": "Multi-tier framework for evaluating AI agent skills with quality gates, semantic overlap detection, synthetic evaluation dataset generation, and live agent evaluation that measures how skills affect agent behavior.",
+      "stars": 507,
+      "language": "Python",
+      "topics": [
+        "agent-evaluation",
+        "agent-security",
+        "agent-skills",
+        "agentic-ai",
+        "benchmark",
+        "claude-code",
+        "codex",
+        "evaluate",
+        "evaluation",
+        "security-scanner",
+        "skill-eval",
+        "skill-evals",
+        "skill-evaluation",
+        "skill-evaluator",
+        "skills"
+      ]
+    },
+    {
+      "name": "NVIDIA/skills",
+      "url": "https://github.com/NVIDIA/skills",
+      "description": "Agent Skills for NVIDIA products — install into Claude Code, Codex, and other coding agents to run Physical AI, robotics, simulation, CUDA, and RAG workflows end to end.",
+      "stars": 3411,
+      "language": "Python",
+      "topics": [
+        "agent-skills",
+        "agentic-ai",
+        "ai-agents",
+        "claude-code",
+        "codex",
+        "coding-agents",
+        "cuda",
+        "developer-tools",
+        "llm",
+        "omniverse",
+        "physical-ai",
+        "rag",
+        "robotics",
+        "simulation"
+      ]
+    },
+    {
+      "name": "NVIDIA/SkillSpector",
+      "url": "https://github.com/NVIDIA/SkillSpector",
+      "description": "Security scanner for AI agent skills. Detect vulnerabilities, malicious patterns, security risks, prompt injection, data exfiltration, and supply-chain risks in Claude Code, Codex, and MCP skills before you install them.",
+      "stars": 18135,
+      "language": "Python",
+      "topics": [
+        "agent-security",
+        "agent-skills",
+        "agentic-ai",
+        "ai-security",
+        "claude-code",
+        "mcp",
+        "prompt-injection",
+        "security-scanner",
+        "security-tools",
+        "security-workflow",
+        "supply-chain-security"
+      ]
+    },
+    {
+      "name": "career-ops-hq/career-ops",
+      "url": "https://github.com/career-ops-hq/career-ops",
+      "description": "Open-source AI job search: scan job portals, evaluate listings into a structured A-H report with a global 1-5 score, tailor your CV, track applications — runs locally in your AI coding CLI (Claude Code, Codex, OpenCode, Antigravity…)",
+      "stars": 72467,
+      "language": "JavaScript",
+      "topics": [
+        "ai-agent",
+        "ai-job-search",
+        "ats",
+        "career",
+        "careerops",
+        "claude-code",
+        "cli",
+        "cover-letter",
+        "cv",
+        "interview-prep",
+        "job-application",
+        "job-hunting",
+        "job-search",
+        "job-tracker",
+        "jobsearch",
+        "jobseekers",
+        "local-first",
+        "open-source",
+        "resume",
+        "resume-builder"
+      ]
     }
   ],
   "Linux & Terminal": [

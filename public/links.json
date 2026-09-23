@@ -165,10 +165,6 @@
   ],
   "AI Tools & Agents": [
     {
-      "title": "[AI Tools 101] AI web scraping with Google Sheets | Make",
-      "url": "https://us2.make.com/templates/12157-ai-tools-101-ai-web-scraping-with-google-sheets"
-    },
-    {
       "title": "Infographics-AI",
       "url": "https://infograph.venngage.com/universal-generator"
     },
@@ -219,9 +215,7 @@
     {
       "title": "Free Gemini Watermark Remover Online | Remove Gemini Logo",
       "url": "https://pilio.ai/gemini-watermark-remover"
-    }
-  ],
-  "Learning & Career": [
+    },
     {
       "title": "Scholarship portal for Indian students | Find online scholarships info",
       "url": "https://www.buddy4study.com/scholarship/nsp-top-class-education-scheme-for-sc-students"
@@ -471,10 +465,6 @@
     {
       "title": "Amacro Transitions",
       "url": "https://amacro.vercel.app/"
-    },
-    {
-      "title": "App Motion - Mobile motion design gallery",
-      "url": "https://appmotion.design/"
     }
   ],
   "MCP & Agent Infrastructure": [
@@ -585,6 +575,90 @@
     {
       "title": "Open source programs",
       "url": "https://open-source-mv.vercel.app/"
+    },
+    {
+      "title": "[AI Tools 101] AI web scraping with Google Sheets | Make",
+      "url": "https://us2.make.com/templates/12157-ai-tools-101-ai-web-scraping-with-google-sheets"
+    },
+    {
+      "title": "Dinamo Font Gauntlet",
+      "url": "https://fontgauntlet.com/"
+    },
+    {
+      "title": "ASCII Magic Editor, Free Online Image & Video Shader Tool",
+      "url": "https://www.ascii-magic.com/app"
+    },
+    {
+      "title": "playgrnd — tiny tools for making weird, beautiful things",
+      "url": "https://www.playgrnd.tools/"
+    },
+    {
+      "title": "Paper Studio — paper stack simulator",
+      "url": "https://www.designminis.com/paper-studio"
+    },
+    {
+      "title": "App Motion - Mobile motion design gallery",
+      "url": "https://appmotion.design/"
+    },
+    {
+      "title": "sliick — Free 3D mockup maker",
+      "url": "https://www.sliick.co/"
+    },
+    {
+      "title": "prompts.chat - AI Prompts Community",
+      "url": "https://prompts.chat/"
+    },
+    {
+      "title": "LibreChat - The Open-Source AI Platform",
+      "url": "https://www.librechat.ai/"
+    },
+    {
+      "title": "Four Modes — Think With AI",
+      "url": "https://fourmodes.teybannerman.com/"
+    },
+    {
+      "title": "Bloop — Social Media Animation Generator",
+      "url": "https://bloop.wtf/en"
+    },
+    {
+      "title": "NotebookLM Slide Styles | Generate Beautiful Presentations with AI",
+      "url": "https://notebooklm-prompt-styles.vercel.app/"
+    },
+    {
+      "title": "OpenJEV — Intelligence layer",
+      "url": "https://openjev.sh/"
+    },
+    {
+      "title": "Inspect, annotate, and give feedback on any live interface | Mesurer",
+      "url": "https://mesurer.dev/"
+    },
+    {
+      "title": "garak: LLM vulnerability scanner",
+      "url": "https://garak.ai/"
+    },
+    {
+      "title": "Composio",
+      "url": "https://composio.dev/"
+    },
+    {
+      "title": "Firecrawl - The context API to search, scrape, and interact with the web at scale. 🔥",
+      "url": "https://www.firecrawl.dev/"
+    },
+    {
+      "title": "Doop — AI Design Canvas & Design MCP for Claude Code",
+      "url": "https://doop.design/"
+    },
+    {
+      "title": "yui.",
+      "url": "https://yui540.com/"
+    },
+    {
+      "title": "Bulbul — Voice dictation for Windows, Mac, Linux & Android, without the SaaS",
+      "url": "https://bulbultypes.xyz/"
+    },
+    {
+      "title": "Papers with Code — Trending research and open source",
+      "url": "https://paperswithcode.co/"
     }
   ]
 }
