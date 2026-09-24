@@ -8,14 +8,17 @@ export const CATEGORY_DISPLAY_ORDER = [
   'MCP & Agent Infrastructure',
 ]
 
+const PRIORITY_SET = new Set(CATEGORY_DISPLAY_ORDER)
+
 export function getDisplayCategories(
   categorized: Record<string, LinkItem[]>
 ): string[] {
   const allCats = Object.keys(categorized)
-  const priority = CATEGORY_DISPLAY_ORDER.filter((c) => allCats.includes(c))
+  const priority = CATEGORY_DISPLAY_ORDER.filter((c) => categorized[c])
   const rest = allCats.filter(
-    (c) => !CATEGORY_DISPLAY_ORDER.includes(c) && c !== 'Anime & Art'
+    (c) => !PRIORITY_SET.has(c) && c !== 'Anime & Art'
   )
-  const animeLast = allCats.includes('Anime & Art') ? ['Anime & Art'] : []
+  const animeLast = categorized['Anime & Art'] ? ['Anime & Art'] : []
   return [...priority, ...rest, ...animeLast]
 }
+

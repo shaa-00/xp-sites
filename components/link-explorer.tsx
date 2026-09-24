@@ -1,19 +1,21 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import dynamic from 'next/dynamic'
 import { Search } from 'iconoir-react'
 import ExportLinkGrid from '@/components/export-link-grid'
 import { type LinkItem } from '@/components/category-section'
 import { getDisplayCategories } from '@/lib/category-order'
-import SearchBar from '@/components/search-bar'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { CategoryRail } from '@/components/category-rail'
 
+// Dynamic import for SearchBar modal so its code is only loaded on demand (bundle-dynamic-imports)
+const SearchBar = dynamic(() => import('@/components/search-bar'), {
+  ssr: false,
+})
+
 interface LinkExplorerProps {
   categorized: Record<string, LinkItem[]>
-  // Server-rendered full grid passed down from page.tsx. Keeping it in the
-  // server tree (not imported here) is what puts the cards in the initial
-  // HTML for LCP instead of building them client-side after hydration.
   children?: React.ReactNode
 }
 
@@ -34,12 +36,17 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
   }, [])
 
   const bookmarks = useMemo(
-    () => Object.values(categorized).flat(),
+    () => Object.values(categorized || {}).flat(),
     [categorized]
   )
   const totalLinks = bookmarks.length
 
-  const handleFilter = (type: 'category' | 'link', value: string) => {
+  const allDisplayCategories = useMemo(
+    () => getDisplayCategories(categorized),
+    [categorized]
+  )
+
+  const handleFilter = useCallback((type: 'category' | 'link', value: string) => {
     if (type === 'category') {
       setFilteredCategory(value)
       setFilteredLink(null)
@@ -47,22 +54,30 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
       setFilteredLink(value)
       setFilteredCategory(null)
     }
-  }
+  }, [])
 
-  const clearFilter = () => {
+  const handleSelectCategory = useCallback((category: string | null) => {
+    setFilteredCategory(category)
+    setFilteredLink(null)
+  }, [])
+
+  const clearFilter = useCallback(() => {
     setFilteredCategory(null)
     setFilteredLink(null)
-  }
+  }, [])
 
   const hasFilter = Boolean(filteredCategory || filteredLink)
 
   const displayed = useMemo(() => {
+    if (!categorized || typeof categorized !== 'object') {
+      return {}
+    }
     if (filteredCategory)
       return { [filteredCategory]: categorized[filteredCategory] || [] }
     if (filteredLink) {
       return Object.entries(categorized).reduce(
         (acc, [cat, items]) => {
-          const matches = items.filter((l) => l.url === filteredLink)
+          const matches = (items || []).filter((l) => l.url === filteredLink)
           if (matches.length) acc[cat] = matches
           return acc
         },
@@ -112,22 +127,18 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
 
       <main className="mx-auto mt-8 max-w-4xl px-4 pb-12 sm:mt-12 sm:px-6 lg:px-8">
         <CategoryRail
-          categories={getDisplayCategories(categorized)}
+          categories={allDisplayCategories}
           categorized={categorized}
+          totalLinks={totalLinks}
           activeCategory={filteredCategory}
-          onSelect={(category) => {
-            setFilteredCategory(category)
-            setFilteredLink(null)
-          }}
+          onSelect={handleSelectCategory}
         />
 
-        {(filteredCategory || filteredLink) && (
+        {hasFilter ? (
           <div className="mb-10 flex items-center justify-between gap-4 border-b border-border/60 py-4">
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-foreground">
-                {filteredCategory
-                  ? filteredCategory
-                  : 'Search results'}
+                {filteredCategory ? filteredCategory : 'Search results'}
               </p>
               <p className="mt-0.5 text-xs text-muted-foreground">
                 {filteredCategory
@@ -142,7 +153,7 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
               Clear filter
             </button>
           </div>
-        )}
+        ) : null}
 
         {/* No filter: show the server-rendered grid shipped in the initial HTML
             (LCP). When filtering, render a client copy; the markup is identical
@@ -153,21 +164,19 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
               categorized={displayed}
               categories={displayedCategories}
             />
-            {displayedCategories.length === 0 && (
+            {displayedCategories.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">No results found</p>
               </div>
-            )}
+            ) : null}
           </>
         ) : (
           children
         )}
       </main>
 
-      {/* Floating search modal — CSS enter animations replace framer-motion.
-          Exit is instant (no AnimatePresence); the blur/fade-in on open is
-          preserved. */}
-      {showFloatingSearch && (
+      {/* Floating search modal */}
+      {showFloatingSearch ? (
         <div
           className="xp-fade-in fixed inset-0 z-50 backdrop-blur-md flex items-start justify-center pt-24 px-4"
           onClick={() => setShowFloatingSearch(false)}
@@ -188,7 +197,7 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
             />
           </div>
         </div>
-      )}
+      ) : null}
     </>
   )
 }

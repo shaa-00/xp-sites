@@ -60,9 +60,9 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose, shouldFocusOnMou
   }, [])
 
   const results = useMemo(() => {
-    // Empty state is computed from the immediate query so clearing the input
-    // snaps back to all categories instantly; only the filtering is deferred.
-    if (!query.trim()) {
+    // Empty state is computed when deferredQuery is empty so clearing the input
+    // snaps back to all categories; filtering uses the deferred query to avoid blocking main thread.
+    if (!deferredQuery.trim()) {
       return categories.map(cat => ({
         type: 'category' as const,
         label: cat,
@@ -91,7 +91,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose, shouldFocusOnMou
       }))
 
     return [...categoryMatches, ...linkMatches]
-  }, [query, deferredQuery, categories, bookmarks, categorized])
+  }, [deferredQuery, categories, bookmarks])
 
   const handleSelect = useCallback((result: SearchResult) => {
     onFilter(result.type, result.value)
@@ -154,7 +154,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose, shouldFocusOnMou
             onFocus={() => setIsFocused(true)}
             className="w-full rounded-lg border border-border/50 bg-background pl-9 pr-9 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-text"
           />
-          {query && (
+          {query ? (
             <button
               onClick={() => {
                 setQuery('')
@@ -164,10 +164,10 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose, shouldFocusOnMou
             >
               <X className="h-4 w-4" />
             </button>
-          )}
+          ) : null}
 
           {/* Dropdown Results — CSS enter animation replaces framer-motion */}
-          {isFocused && results.length > 0 && (
+          {isFocused && results.length > 0 ? (
             <div
               onWheel={handleDropdownWheel}
               className="xp-dropdown-in absolute top-full left-0 right-0 mt-2 rounded-xl border border-white/20 z-50 max-h-52 overflow-y-auto flex flex-col"
@@ -182,29 +182,32 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose, shouldFocusOnMou
                 {results.map((result, index) => (
                   <li
                     key={`${result.type}-${result.value}`}
-                    className={`xp-item-in w-full px-4 py-2.5 text-left text-sm transition-colors cursor-pointer ${
-                      activeIndex === index
-                        ? 'bg-primary/10 text-foreground'
-                        : 'hover:bg-muted'
-                    } ${result.type === 'category' ? 'border-b border-border/30 last:border-b-0' : ''}`}
+                    className={`xp-item-in w-full text-left text-sm transition-colors ${
+                      result.type === 'category' ? 'border-b border-border/30 last:border-b-0' : ''
+                    }`}
                     style={{ animationDelay: `${index * 0.02}s` }}
                   >
                     <button
+                      type="button"
                       onClick={() => handleSelect(result)}
-                      className="w-full cursor-pointer"
+                      className={`w-full px-4 py-2.5 text-left cursor-pointer transition-colors ${
+                        activeIndex === index
+                          ? 'bg-primary/10 text-foreground'
+                          : 'hover:bg-muted'
+                      }`}
                     >
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="font-medium">{result.label}</span>
-                          {result.type === 'category' && (
+                          {result.type === 'category' ? (
                             <span className="ml-2 inline-block rounded-full bg-primary/20 px-2 py-0.5 text-xs text-primary">
                               Category
                             </span>
-                          )}
+                          ) : null}
                         </div>
-                        {result.type === 'link' && (
+                        {result.type === 'link' ? (
                           <span className="text-xs text-muted-foreground">Link</span>
-                        )}
+                        ) : null}
                       </div>
                     </button>
                   </li>
@@ -214,7 +217,7 @@ function SearchBar({ bookmarks, categorized, onFilter, onClose, shouldFocusOnMou
                 <span>↑↓ to navigate • ⏎ to select • ESC to close</span>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

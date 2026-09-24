@@ -190,7 +190,7 @@ export function CategorySection({ category, links }: CategorySectionProps) {
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {links.filter((link) => isSafeHttpUrl(link.url)).map((link) => (
+        {links.map((link) => (
           // eslint-disable-next-line react/jsx-no-target-blank
           <a
             key={link.url}
@@ -202,12 +202,12 @@ export function CategorySection({ category, links }: CategorySectionProps) {
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  {link.isGitHub && (
+                  {link.isGitHub ? (
                     <div
                       className="h-2 w-2 rounded-full bg-green-500 flex-shrink-0"
                       title="From GitHub"
                     />
-                  )}
+                  ) : null}
                   <p className="text-sm font-medium text-foreground line-clamp-2 group-hover:underline">
                     {link.title}
                   </p>

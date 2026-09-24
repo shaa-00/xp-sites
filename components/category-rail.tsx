@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, memo } from 'react'
 import {
   Bookmark,
   Cpu as Bot,
@@ -28,6 +28,7 @@ import type { LinkItem } from '@/components/category-section'
 interface CategoryRailProps {
   categories: string[]
   categorized: Record<string, LinkItem[]>
+  totalLinks?: number
   activeCategory: string | null
   onSelect: (category: string | null) => void
 }
@@ -53,13 +54,17 @@ const CATEGORY_ICONS: Record<string, typeof Tag> = {
   'Self-Hosted & Architecture': Server,
 }
 
-export function CategoryRail({
+export const CategoryRail = memo(function CategoryRail({
   categories,
   categorized,
+  totalLinks,
   activeCategory,
   onSelect,
 }: CategoryRailProps) {
   const railRef = useRef<HTMLDivElement>(null)
+  const activeBtnRef = useRef<HTMLButtonElement>(null)
+
+  const count = totalLinks ?? Object.values(categorized || {}).flat().length
 
   useEffect(() => {
     const rail = railRef.current
@@ -77,6 +82,24 @@ export function CategoryRail({
     return () => rail.removeEventListener('wheel', handleWheel)
   }, [])
 
+  useEffect(() => {
+    if (activeCategory && activeBtnRef.current) {
+      activeBtnRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      })
+    }
+  }, [activeCategory])
+
+  const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+    e.currentTarget.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'nearest',
+    })
+  }
+
   return (
     <nav aria-label="Filter by category" className="border-y border-border/60 py-2">
       <div
@@ -86,6 +109,7 @@ export function CategoryRail({
         <button
           type="button"
           onClick={() => onSelect(null)}
+          onFocus={handleFocus}
           aria-pressed={activeCategory === null}
           className={`flex h-10 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
             activeCategory === null
@@ -100,7 +124,7 @@ export function CategoryRail({
               activeCategory === null ? 'bg-primary-foreground/15' : 'bg-muted-foreground/10'
             }`}
           >
-            {Object.values(categorized).flat().length}
+            {count}
           </span>
         </button>
 
@@ -114,7 +138,9 @@ export function CategoryRail({
             <button
               key={category}
               type="button"
+              ref={isActive ? activeBtnRef : null}
               onClick={() => onSelect(category)}
+              onFocus={handleFocus}
               aria-pressed={isActive}
               className={`flex h-10 shrink-0 items-center gap-2 rounded-lg px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
                 isActive
@@ -133,4 +159,4 @@ export function CategoryRail({
       </div>
     </nav>
   )
-}
+})

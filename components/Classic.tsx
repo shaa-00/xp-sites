@@ -12,6 +12,17 @@ export interface ClassicProps extends Omit<
   [key: `data-${string}`]: string | number | boolean | null | undefined
 }
 
+const SUN_RAY_PATHS = [
+  'M12 1.4v2.4',
+  'm20.3 3.7-2.5 2.5',
+  'M22.6 12h-2.4',
+  'M12 22.6v-2.4',
+  'M1.4 12h2.4',
+  'm20.3 20.3-2.5-2.5',
+  'm3.7 20.3 2.5-2.5',
+  'm3.7 3.7 2.5 2.5',
+] as const
+
 export function Classic({
   duration = 400,
   toggled,
@@ -63,16 +74,7 @@ export function Classic({
             clipPath={`url(#${clipMainId})`}
             className="origin-center motion-safe:transition-transform motion-safe:duration-(--toggles-dot-dev--duration) dark:scale-170"
           />
-          {[
-            'M12 1.4v2.4',
-            'm20.3 3.7-2.5 2.5',
-            'M22.6 12h-2.4',
-            'M12 22.6v-2.4',
-            'M1.4 12h2.4',
-            'm20.3 20.3-2.5-2.5',
-            'm3.7 20.3 2.5-2.5',
-            'm3.7 3.7 2.5 2.5',
-          ].map((path) => (
+          {SUN_RAY_PATHS.map((path) => (
             <path
               key={path}
               d={path}
