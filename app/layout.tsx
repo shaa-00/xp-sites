@@ -1,21 +1,21 @@
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata, Viewport } from 'next'
-import { Poppins, Quicksand } from 'next/font/google'
+import { Space_Grotesk, DM_Sans } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 
-const poppins = Poppins({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['500', '600'],
-  variable: '--font-general-sans',
+  weight: ['500', '600', '700'],
+  variable: '--font-heading',
   display: 'swap',
 })
 
-const quicksand = Quicksand({
+const dmSans = DM_Sans({
   subsets: ['latin'],
-  weight: ['500', '600'],
-  variable: '--font-quicksand',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-body',
   display: 'swap',
 })
 
@@ -69,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`bg-background ${poppins.variable} ${quicksand.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`bg-background ${spaceGrotesk.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <body className="antialiased">
         <ThemeProvider
           attribute="class"

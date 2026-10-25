@@ -10,8 +10,12 @@ function loadEnvLocal() {
             if (!trimmed || trimmed.startsWith('#')) continue
             const index = trimmed.indexOf('=')
             if (index > 0) {
-                const key = trimmed.slice(0, index)
-                if (!(key in process.env)) process.env[key] = trimmed.slice(index + 1)
+                const key = trimmed.slice(0, index).trim()
+                let val = trimmed.slice(index + 1).trim()
+                if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+                    val = val.slice(1, -1)
+                }
+                if (!(key in process.env)) process.env[key] = val
             }
         }
     })

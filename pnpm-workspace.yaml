@@ -5,3 +5,4 @@ allowBuilds:
 overrides:
   browserslist: 4.29.0
   esbuild: 0.28.2
+  source-map-js: ">=1.2.2"

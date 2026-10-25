@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { Search } from 'iconoir-react'
 import ExportLinkGrid from '@/components/export-link-grid'
@@ -98,15 +99,21 @@ function LinkExplorer({ categorized, children }: LinkExplorerProps) {
         <div className={`mx-auto relative flex items-center justify-between gap-2 rounded-2xl border border-border/60 px-2.5 py-2 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_8px_28px_rgba(0,0,0,0.10)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/50 transition-[max-width,background-color] duration-300 ease-out motion-reduce:transition-none ${scrolled ? 'max-w-3xl bg-background/80' : 'max-w-4xl bg-background/70'}`}>
           <a
             href="/"
-            className="flex shrink-0 items-center rounded-xl px-1.5 py-0.5 outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary/30"
-            aria-label="XP-Farm home"
+            className="group flex shrink-0 items-center gap-2.5 rounded-xl px-1.5 py-0.5 outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary/30"
+            aria-label="XpSites home"
           >
-            <span aria-hidden="true" className="grid h-7 w-7 place-items-center rounded-md bg-primary text-xs font-bold text-primary-foreground">XP</span>
+            <Image
+              src="/logo.png"
+              alt="Xpsites logo"
+              width={28}
+              height={28}
+              priority
+              className="h-7 w-7 object-contain transition-transform duration-200 group-hover:scale-105 dark:invert"
+            />
+            <h1 className="font-brand text-[15px] font-bold tracking-tight text-foreground sm:text-base">
+              Xpsites
+            </h1>
           </a>
-
-          <h1 className="min-w-0 flex-1 truncate text-center text-sm font-semibold tracking-tight text-foreground sm:text-base">
-            XP-Farm
-          </h1>
 
           <div className="flex items-center gap-1.5">
             <button
